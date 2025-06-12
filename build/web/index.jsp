@@ -394,7 +394,7 @@
                             Class.forName("com.mysql.cj.jdbc.Driver");
                             Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
                             
-                            String query = "SELECT id, name, address, status, price, image_url FROM Kost WHERE status = 1";
+                            String query = "SELECT id, name, address, status, price, image_url FROM Kost WHERE status > 0";
                             PreparedStatement stmt = conn.prepareStatement(query);
                             ResultSet rs = stmt.executeQuery();
                             
@@ -405,7 +405,7 @@
                                 }
                     %>
                     <div class="col-md-4">
-                        <a href="kostDetail.jsp?id=<%= rs.getInt("id") %>" class="kost-link">
+                        <a href="kostDetail?id=<%= rs.getInt("id") %>" class="kost-link">
                             <div class="kost-card">
                                 <div class="kost-image-container">
                                     <img src="<%= imageUrl %>" alt="<%= rs.getString("name") %>" class="kost-image">
@@ -477,4 +477,3 @@
         </script>
     </body>
 </html>
-
