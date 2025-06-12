@@ -41,7 +41,6 @@ public class KostDetailServlet extends HttpServlet {
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    // Mengisi objek Kost dari database
                     kost = new Kost();
                     kost.setId(rs.getInt("id"));
                     kost.setName(rs.getString("name"));
@@ -53,7 +52,6 @@ public class KostDetailServlet extends HttpServlet {
                     kost.setImageUrl(rs.getString("image_url"));
                     kost.setAddress(rs.getString("address"));
                     
-                    // Mengisi objek User (sebagai owner) dari database
                     owner = new User();
                     owner.setName(rs.getString("owner_name"));
                     owner.setPhone(rs.getString("owner_phone"));
