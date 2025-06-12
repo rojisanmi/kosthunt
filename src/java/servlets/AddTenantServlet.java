@@ -1,23 +1,44 @@
 package servlets;
 
 import classes.JDBC;
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+@WebServlet("/addTenant")
 public class AddTenantServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String tenantName = request.getParameter("tenantName");
         String tenantEmail = request.getParameter("tenantEmail");
-        int kostId = Integer.parseInt(request.getParameter("kostId"));
+        int kostId = 0;
         
-        String query = "INSERT INTO Tenant (user_id, kost_id) VALUES "
-                + "((SELECT id FROM Users WHERE email = '" + tenantEmail + "'), " + kostId + ")";
-        
-        JDBC db = new JDBC();
-        db.runQuery(query);
-        
-        response.sendRedirect("tenantList.jsp");  // Redirect ke halaman daftar tenant setelah berhasil
+        try {
+            kostId = Integer.parseInt(request.getParameter("kostId"));
+            
+            JDBC db = new JDBC();
+            db.connect();
+            
+            // Query aman dengan subquery menggunakan PreparedStatement
+            String query = "INSERT INTO Tenant (user_id, kost_id) VALUES ((SELECT id FROM Users WHERE email = ?), ?)";
+
+            try (PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
+                stmt.setString(1, tenantEmail);
+                stmt.setInt(2, kostId);
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                db.disconnect();
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        response.sendRedirect(request.getContextPath() + "/tenantList"); // Arahkan ke servlet
     }
 }
