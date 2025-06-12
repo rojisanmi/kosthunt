@@ -177,7 +177,6 @@
                         <p class="lead mb-4">Platform terbaik untuk mencari dan memasarkan kost dengan mudah, aman, dan terpercaya.</p>
                     </div>
                     <div class="col-lg-6">
-                        <div class="search-container">
                             <form action="search.jsp" method="GET">
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control search-input" name="query" placeholder="Cari kost berdasarkan lokasi...">
