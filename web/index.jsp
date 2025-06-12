@@ -177,7 +177,7 @@
                         <p class="lead mb-4">Platform terbaik untuk mencari dan memasarkan kost dengan mudah, aman, dan terpercaya.</p>
                     </div>
                     <div class="col-lg-6">
-                            <form action="search.jsp" method="GET">
+                            <form action="search" method="GET">
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control search-input" name="query" placeholder="Cari kost berdasarkan lokasi...">
                                     <button class="btn search-button" type="submit">
@@ -259,7 +259,7 @@
                             for (Kost kost : kostList) {
                     %>
                     <div class="col-md-4 mb-4">
-                        <a href="kostDetail.jsp?id=<%= kost.getId() %>" class="area-kos">
+                        <a href="kostDetail?id=<%= kost.getId() %>" class="area-kos">
                             <img src="https://placehold.co/600x400/4A90E2/FFFFFF?text=<%= java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" alt="Foto <%= kost.getName() %>">
                             <div class="area-kos-info">
                                 <h4><%= kost.getName() %></h4>

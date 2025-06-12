@@ -1,37 +1,10 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
 <%
-    String user = (String) session.getAttribute("user");
-    Map<String, String> userData = new HashMap<String, String>();
-    
-    if (user != null) {
-        try {
-            String dbUrl = "jdbc:mysql://localhost:3306/kostmanagement";
-            String dbUser = "root";
-            String dbPassword = "";
-            
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-            
-            String sql = "SELECT name, role FROM users WHERE email = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, user);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                userData.put("name", rs.getString("name"));
-                userData.put("role", rs.getString("role"));
-            }
-            
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    String userEmail = (String) session.getAttribute("user");
+    String userName = (String) session.getAttribute("userName");
+    String userRole = (String) session.getAttribute("role");
 %>
-
 <style>
     :root {
         --primary-color: #4A90E2;

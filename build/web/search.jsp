@@ -365,7 +365,7 @@
                                     <% }} %>
                                 </div>
                                 
-                                <a href="kostDetail.jsp?id=<%= kost.get("id") %>" class="btn btn-primary w-100 mt-3">
+                                <a href="kostDetail?id=<%= kost.get("id") %>" class="btn btn-primary w-100 mt-3">
                                     Lihat Detail
                                 </a>
                             </div>
