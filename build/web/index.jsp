@@ -1,5 +1,6 @@
 <%@page import="models.Kost"%>
 <%@page import="java.util.List"%>
+<%@page import="java.sql.*"%>
     <!DOCTYPE html>
 <html lang="id">
     <head>
@@ -94,6 +95,19 @@
                 padding: 3rem 0;
             }
 
+            .area-kos-container .container {
+                padding: 0 2rem;
+            }
+
+            .area-kos-container .row {
+                margin: 0 -15px;
+            }
+
+            .area-kos-container .col-md-4 {
+                padding: 0 15px;
+                margin-bottom: 30px;
+            }
+
             .area-kos {
                 position: relative;
                 border-radius: 10px;
@@ -115,13 +129,15 @@
 
             .area-kos-text {
                 position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
                 padding: 1rem;
-                background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
                 color: white;
-                font-weight: 600;
+                font-size: 20px;
+                font-weight: bold;
+                text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+                text-align: center;
             }
 
             .features-section {
@@ -161,7 +177,122 @@
                 .search-container {
                     margin: 1rem;
                 }
+
+                .area-kos-container .container {
+                    padding: 0 1rem;
+                }
+                
+                .area-kos-container .col-md-4 {
+                    padding: 0 10px;
+                    margin-bottom: 20px;
+                }
             }
+
+            /* Enhanced Kost Card Styles */
+            .kost-card {
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                margin-bottom: 30px;
+                position: relative;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .kost-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            }
+
+            .kost-image-container {
+                position: relative;
+                height: 200px;
+                overflow: hidden;
+            }
+
+            .kost-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            .kost-card:hover .kost-image {
+                transform: scale(1.05);
+            }
+
+            .kost-overlay {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+                padding: 20px;
+                color: white;
+            }
+
+            .kost-name {
+                font-size: 1.4rem;
+                font-weight: 600;
+                margin: 0;
+                text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            }
+
+            .kost-details {
+                padding: 20px;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .kost-address {
+                color: #666;
+                font-size: 0.95rem;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+            }
+
+            .kost-address i {
+                color: var(--primary-color);
+                margin-right: 8px;
+            }
+
+            .kost-price {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: var(--primary-color);
+                margin-top: auto;
+            }
+
+            .kost-status {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: 500;
+                color: var(--primary-color);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+
+            .kost-link {
+                text-decoration: none;
+                color: inherit;
+                display: block;
+                height: 100%;
+            }
+
+            .kost-link:hover {
+                color: inherit;
+            }
+            
+            
         </style>
     </head>
     <body>
@@ -185,12 +316,11 @@
                                     </button>
                                 </div>
                             </form>
-                        </div>
                     </div>
                 </div>
             </div>
         </section>
-
+        
         <!-- Features Section -->
         <section class="features-section">
             <div class="container">
@@ -220,7 +350,7 @@
                 </div>
             </div>
         </section>
-
+        
         <!-- Popular Areas Section -->
         <section class="area-kos-container">
             <div class="container">
@@ -240,8 +370,8 @@
                     </div>
                     <div class="col-md-4">
                         <div class="area-kos" onclick="window.location.href='kost/solo.jsp'">
-                            <img src="https://th.bing.com/th/id/R.78135cd5b4b2f9280036f182fe7dd925" alt="Kost Solo">
-                            <div class="area-kos-text">Kost Solo</div>
+                            <img src="https://blog.bankmega.com/wp-content/uploads/2023/01/tempat-wisata-di-kota-solo.jpg" alt="Kost Solo">
+                            <div class="area-kos-text" style="text-align: center">Kost Solo</div>
                         </div>
                     </div>
                 </div>
@@ -254,25 +384,60 @@
                 <h2 class="text-center mb-5">Daftar Kost Tersedia</h2>
                 <div class="row">
                     <%
-                        List<Kost> kostList = (List<Kost>) request.getAttribute("kostList");
-                        if (kostList != null && !kostList.isEmpty()) {
-                            for (Kost kost : kostList) {
+                        List<Kost> kostList = null;
+                        try {
+                            // Database connection parameters
+                            String dbUrl = "jdbc:mysql://localhost:3306/kostmanagement";
+                            String dbUser = "root";
+                            String dbPassword = "";
+                            
+                            Class.forName("com.mysql.cj.jdbc.Driver");
+                            Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+                            
+                            String query = "SELECT id, name, address, status, price, image_url FROM Kost WHERE status = 1";
+                            PreparedStatement stmt = conn.prepareStatement(query);
+                            ResultSet rs = stmt.executeQuery();
+                            
+                            while (rs.next()) {
+                                String imageUrl = rs.getString("image_url");
+                                if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                                    imageUrl = "https://placehold.co/600x400/4A90E2/FFFFFF?text=" + java.net.URLEncoder.encode(rs.getString("name"), "UTF-8");
+                                }
                     %>
-                    <div class="col-md-4 mb-4">
-                        <a href="kostDetail.jsp?id=<%= kost.getId() %>" class="area-kos">
-                            <img src="https://placehold.co/600x400/4A90E2/FFFFFF?text=<%= java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" alt="Foto <%= kost.getName() %>">
-                            <div class="area-kos-info">
-                                <h4><%= kost.getName() %></h4>
-                                <p><%= kost.getAddress() %></p>
+                    <div class="col-md-4">
+                        <a href="kostDetail.jsp?id=<%= rs.getInt("id") %>" class="kost-link">
+                            <div class="kost-card">
+                                <div class="kost-image-container">
+                                    <img src="<%= imageUrl %>" alt="<%= rs.getString("name") %>" class="kost-image">
+                                    <div class="kost-overlay">
+                                        <h3 class="kost-name"><%= rs.getString("name") %></h3>
+                                    </div>
+                                    <div class="kost-status">
+                                        <i class="fas fa-check-circle"></i> Tersedia
+                                    </div>
+                                </div>
+                                <div class="kost-details">
+                                    <div class="kost-address">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <%= rs.getString("address") %>
+                                    </div>
+                                    <div class="kost-price">
+                                        Rp <%= String.format("%,d", rs.getInt("price")) %> / bulan
+                                    </div>
+                                </div>
                             </div>
                         </a>
                     </div>
                     <%
                             }
-                        } else {
+                            rs.close();
+                            stmt.close();
+                            conn.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                     %>
                     <div class="col-12 text-center">
-                        <p>Saat ini belum ada data kos yang tersedia.</p>
+                        <p>Terjadi kesalahan saat mengambil data kost.</p>
                     </div>
                     <%
                         }
@@ -280,6 +445,22 @@
                 </div>
             </div>
         </section>
+
+        <!-- Tenant Dashboard Section -->
+        <%
+            String user = (String) session.getAttribute("user");
+            String userRole = (String) session.getAttribute("role");
+            if (user != null && "tenant".equals(userRole)) {
+        %>
+        <section class="main-container">
+            <div class="container">
+                <h2>Selamat Datang, <%= user %>!</h2>
+                <h3>Temukan Kos Impian Anda</h3>
+            </div>
+        </section>
+        <%
+            }
+        %>
 
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

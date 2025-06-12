@@ -2,10 +2,11 @@
 <%@ page import="java.util.*" %>
 <%
     String user = (String) session.getAttribute("user");
-    Map<String, String> userData = new HashMap<String, String>();
+    Map<String, String> userData = new HashMap<>();
     
     if (user != null) {
         try {
+            // Database connection parameters
             String dbUrl = "jdbc:mysql://localhost:3306/kostmanagement";
             String dbUser = "root";
             String dbPassword = "";
