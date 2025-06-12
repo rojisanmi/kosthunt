@@ -4,8 +4,9 @@ public class User {
     private int id;
     private String name;
     private String email;
-    private String password; // Hanya digunakan untuk proses update, jangan ditampilkan
+    private String password;
     private String role;
+    private String phone;
 
     // Generate getter dan setter untuk semua field di atas
     public int getId() {
@@ -46,5 +47,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+    
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

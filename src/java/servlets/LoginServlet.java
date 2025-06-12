@@ -41,8 +41,9 @@ public class LoginServlet extends HttpServlet {
             if (rs.next()) {
                 // If user found, set session attributes
                 HttpSession session = request.getSession();
-                session.setAttribute("user", email);  // Store email in session
-                session.setAttribute("role", rs.getString("role")); // Store role in session
+                session.setAttribute("user", rs.getString("email"));
+                session.setAttribute("role", rs.getString("role"));
+                session.setAttribute("userName", rs.getString("name"));
 
                 // Check if the user is "Owner" or "Tenant"
                 String role = rs.getString("role");

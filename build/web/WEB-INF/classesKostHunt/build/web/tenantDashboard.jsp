@@ -55,7 +55,7 @@
                     if (kostList != null && !kostList.isEmpty()) {
                         for (Kost kost : kostList) {
                 %>
-                <a href="kostDetail.jsp?id=<%= kost.getId() %>" class="area-kos">
+                <a href="kostDetail?id=<%= kost.getId() %>" class="area-kos">
                     <img src="https://placehold.co/600x400/4A90E2/FFFFFF?text=<%= java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" alt="Foto <%= kost.getName() %>">
                     <div class="area-kos-info">
                         <h4><%= kost.getName() %></h4>
