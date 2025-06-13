@@ -1,1 +1,16 @@
+# NetBeans project files
+/nbproject/private/
+/build/
 /dist/
+/nbdist/
+/.nb-gradle/
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# Lock files (seperti yang Anda temukan)
+.LCK*
+*~
