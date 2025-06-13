@@ -25,6 +25,7 @@ public class AddRoomServlet extends HttpServlet {
 
         String roomNumber = request.getParameter("roomNumber");
         String roomType = request.getParameter("roomType");
+        int roomPrice = Integer.parseInt(request.getParameter("roomPrice"));
         int kostId = 0;
 
         try {
@@ -34,12 +35,13 @@ public class AddRoomServlet extends HttpServlet {
             db.connect();
 
             // Gunakan PreparedStatement untuk query INSERT yang aman
-            String query = "INSERT INTO Room (kost_id, number, type) VALUES (?, ?, ?)";
+            String query = "INSERT INTO Room (kost_id, number, type, price) VALUES (?, ?, ?, ?)";
 
             try (PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
                 stmt.setInt(1, kostId);
                 stmt.setString(2, roomNumber);
                 stmt.setString(3, roomType);
+                stmt.setDouble(4, roomPrice);
                 stmt.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();

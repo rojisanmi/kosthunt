@@ -250,6 +250,12 @@
                         </select>
                     </div>
                     
+                    <div class="mb-4">
+                        <label for="roomPrice" class="form-label">Harga Kamar</label>
+                        <input type="number" class="form-control" id="roomPrice" name="roomPrice" 
+                               placeholder="Contoh: 1000000" required>
+                    </div>
+                    
                     <div class="mt-4">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save me-2"></i>

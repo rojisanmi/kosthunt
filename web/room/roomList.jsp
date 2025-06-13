@@ -306,6 +306,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Nomor Kamar</th>
                                 <th scope="col">Tipe Kamar</th>
+                                <th scope="col">Harga Kamar</th>
                                 <th scope="col" class="text-end">Aksi</th>
                             </tr>
                         </thead>
@@ -318,6 +319,7 @@
                                 <th scope="row"><%= counter++ %></th>
                                 <td><%= room.getNumber() %></td>
                                 <td><%= room.getType() %></td>
+                                <td><%= room.getPrice() %></td>
                                 <td class="text-end">
                                     <a href="<%= request.getContextPath() %>/editRoom?roomId=<%= room.getId() %>" class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit me-1"></i>

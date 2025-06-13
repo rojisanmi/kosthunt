@@ -35,6 +35,7 @@ public class EditRoomServlet extends HttpServlet {
                         room.setId(rs.getInt("id"));
                         room.setNumber(rs.getString("number"));
                         room.setType(rs.getString("type"));
+                        room.setPrice(rs.getInt("price"));
                         room.setKostId(rs.getInt("kost_id"));
                     }
                 }
@@ -57,6 +58,7 @@ public class EditRoomServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String roomNumber = request.getParameter("roomNumber");
         String roomType = request.getParameter("roomType");
+        int roomPrice = Integer.parseInt(request.getParameter("roomPrice"));
         int roomId = 0;
         int kostId = 0;
 
@@ -69,12 +71,13 @@ public class EditRoomServlet extends HttpServlet {
             db.connect();
 
             // Gunakan PreparedStatement untuk keamanan
-            String query = "UPDATE Room SET number = ?, type = ? WHERE id = ?";
+            String query = "UPDATE Room SET number = ?, type = ?, price = ? WHERE id = ?";
             
             try (PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
                 stmt.setString(1, roomNumber);
                 stmt.setString(2, roomType);
-                stmt.setInt(3, roomId);
+                stmt.setInt(3, roomPrice);
+                stmt.setInt(4, roomId);
                 stmt.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();

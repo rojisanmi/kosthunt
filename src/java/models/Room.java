@@ -6,6 +6,7 @@ public class Room {
     private String type;
     private String kostName;
     private int kostId;
+    private int price;
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -17,4 +18,6 @@ public class Room {
     public void setKostId(int kostId) { this.kostId = kostId; }
     public String getKostName() { return kostName; }
     public void setKostName(String kostName) { this.kostName = kostName; }
+    public int getPrice() { return price; }
+    public void setPrice(int price) { this.price = price; }
 }

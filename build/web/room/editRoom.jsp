@@ -258,6 +258,12 @@
                             <option value="VIP (AC + KM Dalam)" <%= "VIP (AC + KM Dalam)".equals(room.getType()) ? "selected" : "" %>>VIP (AC + KM Dalam)</option>
                         </select>
                     </div>
+                        
+                    <div class="mb-4">
+                        <label for="roomPrice" class="form-label">Harga Kamar</label>
+                        <input type="number" class="form-control" id="roomPrice" name="roomPrice" 
+                               value="<%= room.getPrice() %>" required>
+                    </div>
                     
                     <div class="mt-4">
                         <button type="submit" class="btn btn-primary">
