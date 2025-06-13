@@ -1,41 +1,39 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
+<%@ page import="classes.JDBC" %>
 <%
     String user = (String) session.getAttribute("user");
     Map<String, String> userData = new HashMap<>();
     
     if (user != null) {
+        JDBC db = new JDBC();
+        db.connect();
+        
         try {
-            // Database connection parameters
-            String dbUrl = "jdbc:mysql://localhost:3306/kostmanagement";
-            String dbUser = "root";
-            String dbPassword = "";
-            
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-            
-            String sql = "SELECT name, role FROM users WHERE email = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            String sql = "SELECT name, role, phone FROM users WHERE email = ?";
+            PreparedStatement stmt = db.getConnection().prepareStatement(sql);
             stmt.setString(1, user);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
                 userData.put("name", rs.getString("name"));
                 userData.put("role", rs.getString("role"));
+                userData.put("phone", rs.getString("phone"));
             }
             
             rs.close();
             stmt.close();
-            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            db.disconnect();
         }
     }
 %>
 
 <style>
     :root {
-        --primary-color: #4A90E2;
+        --primary-color: #2563eb;
         --secondary-color: #357ab7;
         --text-color: #333;
         --light-gray: #f8f9fa;
@@ -85,7 +83,7 @@
 </style>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg sticky-top" style="z-index: 1030;">
     <div class="container">
         <a class="navbar-brand" href="<%= request.getContextPath() %>/index.jsp" style="text-decoration: none; color: inherit;">KostHunt</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

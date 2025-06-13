@@ -51,8 +51,8 @@ public class LoginServlet extends HttpServlet {
                     System.out.println("Redirecting to ownerDashboard.jsp");
                     response.sendRedirect("ownerDashboard"); // Redirect to Owner's dashboard
                 } else if ("Tenant".equals(role)) {
-                    System.out.println("Redirecting to tenantDashboard.jsp");
-                    response.sendRedirect("tenantDashboard"); // Redirect to Tenant's dashboard
+                    System.out.println("Redirecting to index.jsp");
+                    response.sendRedirect("index.jsp"); // Redirect to Tenant's dashboard
                 } else {
                     request.setAttribute("errorMessage", "Invalid user role.");
                     request.getRequestDispatcher("login.jsp").forward(request, response);
