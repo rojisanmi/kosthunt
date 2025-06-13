@@ -76,6 +76,14 @@
         <servlet-name>KostDetailServlet</servlet-name>
         <servlet-class>servlets.KostDetailServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AssignRoomServlet</servlet-name>
+        <servlet-class>servlets.AssignRoomServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProcessPaymentServlet</servlet-name>
+        <servlet-class>servlets.ProcessPaymentServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AddTenantServlet</servlet-name>
         <url-pattern>/AddTenantServlet</url-pattern>
@@ -151,6 +159,14 @@
     <servlet-mapping>
         <servlet-name>KostDetailServlet</servlet-name>
         <url-pattern>/KostDetailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AssignRoomServlet</servlet-name>
+        <url-pattern>/AssignRoomServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProcessPaymentServlet</servlet-name>
+        <url-pattern>/ProcessPaymentServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
