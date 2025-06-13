@@ -31,7 +31,7 @@ public class EditKostServlet extends HttpServlet {
         JDBC db = new JDBC();
         db.connect();
 
-        String query = "SELECT id, name, address, location FROM Kost WHERE id = ?";
+        String query = "SELECT * FROM Kost WHERE id = ?";
 
         try (PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
             stmt.setInt(1, kostId);
@@ -42,6 +42,12 @@ public class EditKostServlet extends HttpServlet {
                     kost.setName(rs.getString("name"));
                     kost.setAddress(rs.getString("address"));
                     kost.setLocation(rs.getString("location"));
+                    kost.setDescription(rs.getString("description"));
+                    kost.setPrice(rs.getDouble("price"));
+                    kost.setType(rs.getString("type"));
+                    kost.setFacilities(rs.getString("facilities"));
+                    kost.setImageUrl(rs.getString("image_url"));
+                    kost.setStatus(rs.getInt("status"));
                 }
             }
         } catch (SQLException e) {

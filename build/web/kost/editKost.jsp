@@ -244,8 +244,10 @@
                     
                     <div class="mb-4">
                         <label for="location" class="form-label">Lokasi Kost</label>
-                        <textarea class="form-control" id="location" name="location"
-                                  rows="3" required><%= kost.getLocation() %></textarea>
+                        <input type="text" class="form-control" id="location" name="location" 
+                               value="<%= kost.getLocation() != null ? kost.getLocation() : "" %>" 
+                               placeholder="Contoh: Jakarta">
+                        <div class="form-text">Masukkan nama kota saja (Contoh: Jakarta, Bandung, Surabaya)</div>
                     </div>
                     
                     <div class="mb-4">
