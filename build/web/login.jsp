@@ -5,143 +5,261 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Login</title>
+        <title>Login - KostHunt</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <style>
+            :root {
+                --primary-color: #2563eb;
+                --primary-dark: #1d4ed8;
+                --secondary-color: #64748b;
+                --accent-color: #f59e0b;
+                --text-color: #1e293b;
+                --light-bg: #f8fafc;
+                --white: #ffffff;
+                --success: #22c55e;
+                --error: #ef4444;
+                --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+                --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+                --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            }
+
             body {
                 margin: 0;
-                font-family: 'Roboto', poppins;
-                background-color: #ffffff;
-            }
-            .area-header {
-                width: 100%;
-                height: 60px;
-                background-color: #4A90E2;            
-                overflow: hidden;
-                position: relative;
-            }
-            .header {
-                color: white;
-                text-align: left;
-                font-size: 40px;
-                padding: 5px 10px;
-                font-weight: bold;
-            }
-            .container {
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+                min-height: 100vh;
                 display: flex;
-                justify-content: center;
-                align-items: center;
-                height: calc(100vh - 80px);
-                background-color: #fff;
+                flex-direction: column;
+                position: relative;
+                overflow: hidden;
             }
+
+            body::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80') center/cover;
+                opacity: 0.1;
+                z-index: 0;
+            }
+
+            .navbar {
+                background-color: var(--primary-color);
+                padding: 1rem 2rem;
+                box-shadow: var(--shadow-sm);
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+
+            .navbar-brand {
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: var(--white) !important;
+                letter-spacing: -0.5px;
+            }
+
+            .container-login {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                position: relative;
+                z-index: 1;
+                min-height: calc(100vh - 72px); /* Subtract navbar height */
+            }
+
             .login-card {
-                background-color: #ffffff;
-                padding: 40px;
-                border-radius: 12px;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+                background: var(--white);
+                padding: 1.75rem;
+                border-radius: 1.25rem;
+                box-shadow: var(--shadow-lg);
                 width: 100%;
                 max-width: 400px;
+                margin: 0 auto; /* Remove top/bottom margin */
+                transition: all 0.3s ease;
+                animation: fadeInUp 0.8s ease-out;
             }
+
+            .login-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            }
+
             .login-card h2 {
-                margin-bottom: 24px;
-                font-size: 22px;
+                margin-bottom: 1.25rem;
+                font-size: 1.25rem;
                 text-align: center;
+                color: var(--text-color);
+                font-weight: 600;
             }
-            .form-group {
-                margin-bottom: 20px;
-            }
-            .form-group label {
-                display: block;
+
+            .form-label {
                 font-weight: 500;
-                margin-bottom: 8px;
+                color: var(--text-color);
+                margin-bottom: 0.25rem;
+                font-size: 0.8125rem;
             }
-            .form-group input {
-                width: 100%;
-                padding: 12px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                font-size: 14px;
+
+            .form-control {
+                padding: 0.625rem 0.875rem;
+                border: 2px solid #e2e8f0;
+                border-radius: 0.75rem;
+                font-size: 0.8125rem;
+                transition: all 0.3s ease;
             }
-            .btn {
-                background-color: #3498db;
-                color: white;
+
+            .form-control:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            }
+
+            .btn-primary {
+                background-color: var(--primary-color);
                 border: none;
-                padding: 12px;
+                padding: 0.625rem 1.25rem;
+                border-radius: 0.75rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
                 width: 100%;
-                border-radius: 8px;
-                font-size: 16px;
-                cursor: pointer;
+                margin-top: 1rem;
+                font-size: 0.8125rem;
             }
-            .btn:hover {
-                background-color: #2980b9;
+
+            .btn-primary:hover {
+                background-color: var(--primary-dark);
+                transform: translateY(-2px);
             }
+
             .footer-text {
-                margin-top: 16px;
                 text-align: center;
-                font-size: 14px;
+                margin-top: 1.25rem;
+                color: var(--secondary-color);
+                font-size: 0.8125rem;
             }
+
             .footer-text a {
-                color: #3498db;
+                color: var(--primary-color);
                 text-decoration: none;
+                font-weight: 600;
+                transition: all 0.3s ease;
             }
+
             .footer-text a:hover {
-                text-decoration: underline;
+                color: var(--primary-dark);
+            }
+
+            .alert {
+                border-radius: 0.75rem;
+                padding: 0.625rem 1rem;
+                margin-bottom: 1rem;
+                border: none;
+                display: flex;
+                align-items: center;
+                gap: 0.625rem;
+                font-size: 0.8125rem;
+            }
+
+            .alert i {
+                font-size: 0.875rem;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .login-card {
+                    padding: 1.25rem;
+                    margin: 1rem;
+                    max-width: 350px;
+                }
+
+                .login-card h2 {
+                    font-size: 1.125rem;
+                }
+
+                .form-control {
+                    padding: 0.5rem 0.75rem;
+                    font-size: 0.8125rem;
+                }
             }
         </style>
     </head>
     <body>
-
-        <div class="area-header">
-            <div class="header">
-                <a href="index.jsp" style="text-decoration: none; color: inherit;">KostHunt</a>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="<%= request.getContextPath() %>/index.jsp">KostHunt</a>
             </div>
-        </div>
+        </nav>
 
-        <div class="container">
+        <div class="container-login">
             <div class="login-card">
                 <h2>Masuk ke Akun Anda</h2>
-
-                <div class="card-body">
-                    <%
-                        String logoutStatus = request.getParameter("logout");
-                        if ("success".equals(logoutStatus)) {
-                    %>
-                        <div class="alert alert-success" id="logout-alert">Anda telah berhasil logout.</div>
-                    <%
-                        }
-                        String errorMessage = (String) request.getAttribute("errorMessage");
-                        if (errorMessage != null && !errorMessage.isEmpty()) {
-                    %>
-                        <div class="alert alert-danger"><%= errorMessage %></div>
-                    <%
-                        }
-                    %>
-
-                    <form method="POST" action="<%= request.getContextPath() %>/LoginServlet">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="text" id="email" name="email" placeholder="Masukkan email" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Kata Sandi</label>
-                            <input type="password" id="password" name="password" placeholder="Masukkan kata sandi" required />
-                        </div>
-                        
-                        <button type="submit" class="btn">Masuk</button>
-                        <div class="footer-text">
-                            Belum punya akun? <a href="register.jsp">Daftar sekarang</a>
-                        </div>
-                    </form>
+                <%
+                    String logoutStatus = request.getParameter("logout");
+                    if ("success".equals(logoutStatus)) {
+                %>
+                <div class="alert alert-success" id="logout-alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Anda telah berhasil logout.
+                </div>
+                <%
+                    }
+                    String errorMessage = (String) request.getAttribute("errorMessage");
+                    if (errorMessage != null && !errorMessage.isEmpty()) {
+                %>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= errorMessage %>
+                </div>
+                <%
+                    }
+                %>
+                <form action="<%= request.getContextPath() %>/LoginServlet" method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Kata Sandi</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan kata sandi" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Masuk
+                    </button>
+                </form>
+                <div class="footer-text">
+                    Belum punya akun? <a href="register.jsp">Daftar di sini</a>
                 </div>
             </div>
         </div>
+
         <script>
             const logoutAlert = document.getElementById('logout-alert');
-
             if (logoutAlert) {
                 setTimeout(() => {
-                    logoutAlert.style.display = 'none'; // Sembunyikan elemen
-                }, 1500); 
+                    logoutAlert.style.opacity = '0';
+                    setTimeout(() => {
+                        logoutAlert.style.display = 'none';
+                    }, 300);
+                }, 2000);
             }
         </script>
     </body>

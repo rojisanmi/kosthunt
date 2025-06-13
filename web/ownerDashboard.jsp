@@ -7,54 +7,287 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Owner Dashboard - KostHunt</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <style>
-            body { margin: 0; padding: 0; font-family: 'Roboto', poppins; background-color: #f4f7f6; }
-            .area-header { width: 100%; height: 60px; background-color: #4A90E2; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; }
-            .header { color: white; font-size: 30px; font-weight: bold; }
-            .header-nav { margin-left: auto; display: flex; gap: 10px; }
-            .nav-button { background-color: white; color: #4A90E2; padding: 8px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; text-decoration: none; display: inline-block; text-align: center; }
-            .nav-button:hover { background-color: #e0e0e0; }
-            .main-container { padding: 20px; }
-            .dashboard-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
-            .dashboard-header h2 { font-size: 28px; color: #333; margin: 0; }
-            .btn-add { background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; }
-            .kost-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
-            .kost-card { background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-            .kost-card-img { width: 100%; height: 180px; object-fit: cover; }
-            .kost-card-body { padding: 15px; flex-grow: 1; }
-            .kost-card-body h4 { margin: 0 0 5px 0; font-size: 20px; }
-            .kost-card-body p { margin: 0; color: #666; }
-            .kost-card-footer { background-color: #f8f9fa; padding: 10px 15px; display: flex; justify-content: flex-end; gap: 10px; }
-            .btn-action { text-decoration: none; color: white; padding: 5px 10px; border-radius: 5px; }
-            .btn-edit { background-color: #ffc107; } /* Kuning */
-            .btn-delete { background-color: #dc3545; } /* Merah */
-            .btn-info { background-color: #17a2b8; } /* Biru Info */
+            :root {
+                --primary-color: #2563eb;
+                --primary-dark: #1d4ed8;
+                --secondary-color: #64748b;
+                --accent-color: #f59e0b;
+                --text-color: #1e293b;
+                --light-bg: #f8fafc;
+                --white: #ffffff;
+                --success: #22c55e;
+                --warning: #f59e0b;
+                --danger: #ef4444;
+                --info: #3b82f6;
+                --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+                --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+                --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            }
+
+            body {
+                margin: 0;
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                background-color: var(--light-bg);
+                color: var(--text-color);
+                min-height: 100vh;
+            }
+
+            .main-container {
+                padding: 2rem;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .dashboard-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+            }
+
+            .dashboard-header h2 {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: var(--text-color);
+                margin: 0;
+            }
+
+            .btn-add {
+                background-color: var(--primary-color);
+                color: var(--white);
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.75rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                border: none;
+                font-size: 0.875rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-add::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: width 0.6s ease, height 0.6s ease;
+            }
+
+            .btn-add:hover::after {
+                width: 300px;
+                height: 300px;
+            }
+
+            .btn-add:hover {
+                background-color: var(--primary-dark);
+                transform: translateY(-2px);
+                color: var(--white);
+            }
+
+            .kost-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .kost-card {
+                background-color: var(--white);
+                border-radius: 1rem;
+                overflow: hidden;
+                box-shadow: var(--shadow);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                transform: translateY(0);
+                animation: fadeIn 0.5s ease-out;
+            }
+
+            .kost-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-lg);
+            }
+
+            .kost-card-img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .kost-card:hover .kost-card-img {
+                transform: scale(1.05);
+            }
+
+            .kost-card-body {
+                padding: 1.25rem;
+                flex-grow: 1;
+            }
+
+            .kost-card-body h4 {
+                margin: 0 0 0.5rem 0;
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: var(--text-color);
+            }
+
+            .kost-card-body p {
+                margin: 0;
+                color: var(--secondary-color);
+                font-size: 0.875rem;
+                line-height: 1.5;
+            }
+
+            .kost-card-footer {
+                background-color: var(--light-bg);
+                padding: 1rem;
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.75rem;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+            }
+
+            .btn-action {
+                text-decoration: none;
+                color: var(--white);
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                font-size: 0.875rem;
+                font-weight: 500;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.375rem;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-action::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: width 0.6s ease, height 0.6s ease;
+            }
+
+            .btn-action:hover::after {
+                width: 300px;
+                height: 300px;
+            }
+
+            .btn-action:hover {
+                transform: translateY(-2px);
+                color: var(--white);
+            }
+
+            .btn-info {
+                background-color: var(--info);
+            }
+
+            .btn-info:hover {
+                background-color: #2563eb;
+            }
+
+            .btn-edit {
+                background-color: var(--warning);
+            }
+
+            .btn-edit:hover {
+                background-color: #d97706;
+            }
+
+            .btn-delete {
+                background-color: var(--danger);
+            }
+
+            .btn-delete:hover {
+                background-color: #dc2626;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 3rem;
+                background-color: var(--white);
+                border-radius: 1rem;
+                box-shadow: var(--shadow);
+                margin-top: 2rem;
+                animation: fadeIn 0.5s ease-out;
+            }
+
+            .empty-state p {
+                color: var(--secondary-color);
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            @media (max-width: 768px) {
+                .main-container {
+                    padding: 1rem;
+                }
+
+                .dashboard-header {
+                    flex-direction: column;
+                    gap: 1rem;
+                    align-items: flex-start;
+                }
+
+                .kost-container {
+                    grid-template-columns: 1fr;
+                }
+
+                .kost-card-footer {
+                    flex-wrap: wrap;
+                }
+
+                .btn-action {
+                    flex: 1;
+                    justify-content: center;
+                }
+            }
         </style>
     </head>
     <body>
-        <%
-            String user = (String) session.getAttribute("user");
-        %>
-
-        <div class="area-header">
-            <div class="header">
-                <a href="index.jsp" style="text-decoration: none; color: inherit;">KostHunt</a>
-            </div>
-            <div class="header-nav">
-                <% if (user != null) { %>
-                    <a href="<%= request.getContextPath() %>/profile" class="nav-button">Profile</a>
-                    <a href="<%= request.getContextPath() %>/logout" class="nav-button">Logout</a>
-                <% } else {
-                    response.sendRedirect("login.jsp");
-                } %>
-            </div>
-        </div>
+        <jsp:include page="header.jsp" />
 
         <div class="main-container">
             <div class="dashboard-header">
                 <h2>Kelola Kost Anda</h2>
-                <a href="kost/addKost.jsp" class="btn-add"><i class="bi bi-plus-circle"></i> Tambah Kost</a>
+                <a href="kost/addKost.jsp" class="btn-add">
+                    <i class="fas fa-plus"></i>
+                    Tambah Kost
+                </a>
             </div>
 
             <div class="kost-container">
@@ -64,26 +297,75 @@
                         for (Kost kost : kostList) {
                 %>
                 <div class="kost-card">
-                    <img class="kost-card-img" src="https://placehold.co/600x400/4A90E2/FFFFFF?text=<%= java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" alt="Foto <%= kost.getName() %>">
+                    <img class="kost-card-img" src="https://placehold.co/600x400/2563eb/FFFFFF?text=<%= java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" alt="Foto <%= kost.getName() %>">
                     <div class="kost-card-body">
                         <h4><%= kost.getName() %></h4>
                         <p><%= kost.getAddress() %></p>
                     </div>
                     <div class="kost-card-footer">
-                        <a href="<%= request.getContextPath() %>/roomList?kostId=<%= kost.getId() %>" class="btn-action btn-info"><i class="bi bi-door-open"></i> Kelola Kamar</a>
-                        <a href="<%= request.getContextPath() %>/editKost?id=<%= kost.getId() %>" class="btn-action btn-edit"><i class="bi bi-pencil-square"></i> Edit</a>
-                        <a href="<%= request.getContextPath() %>/deleteKost?id=<%= kost.getId() %>" class="btn-action btn-delete" onclick="return confirm('Apakah Anda yakin ingin menghapus kost ini? Tindakan ini tidak dapat dibatalkan.');"><i class="bi bi-trash3"></i> Hapus</a>
+                        <a href="<%= request.getContextPath() %>/roomList?kostId=<%= kost.getId() %>" class="btn-action btn-info">
+                            <i class="fas fa-door-open"></i>
+                            Kelola Kamar
+                        </a>
+                        <a href="<%= request.getContextPath() %>/editKost?id=<%= kost.getId() %>" class="btn-action btn-edit">
+                            <i class="fas fa-pencil-alt"></i>
+                            Edit
+                        </a>
+                        <a href="<%= request.getContextPath() %>/deleteKost?id=<%= kost.getId() %>" class="btn-action btn-delete" 
+                           onclick="return confirm('Apakah Anda yakin ingin menghapus kost ini? Tindakan ini tidak dapat dibatalkan.');">
+                            <i class="fas fa-trash-alt"></i>
+                            Hapus
+                        </a>
                     </div>
                 </div>
                 <%
                         }
                     } else {
                 %>
-                <p>Anda belum memiliki data kos. Silakan klik tombol 'Tambah Kost' untuk memulai.</p>
+                <div class="empty-state">
+                    <p>Anda belum memiliki data kos. Silakan klik tombol 'Tambah Kost' untuk memulai.</p>
+                    <a href="kost/addKost.jsp" class="btn-add">
+                        <i class="fas fa-plus"></i>
+                        Tambah Kost
+                    </a>
+                </div>
                 <%
                     }
                 %>
             </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Intersection Observer for animations
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-fade-in').forEach((element) => {
+                observer.observe(element);
+            });
+        </script>
     </body>
 </html>

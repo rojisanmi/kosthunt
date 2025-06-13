@@ -31,7 +31,7 @@ public class EditKostServlet extends HttpServlet {
         JDBC db = new JDBC();
         db.connect();
 
-        String query = "SELECT id, name, address FROM Kost WHERE id = ?";
+        String query = "SELECT * FROM Kost WHERE id = ?";
 
         try (PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
             stmt.setInt(1, kostId);
@@ -41,6 +41,13 @@ public class EditKostServlet extends HttpServlet {
                     kost.setId(rs.getInt("id"));
                     kost.setName(rs.getString("name"));
                     kost.setAddress(rs.getString("address"));
+                    kost.setLocation(rs.getString("location"));
+                    kost.setDescription(rs.getString("description"));
+                    kost.setPrice(rs.getDouble("price"));
+                    kost.setType(rs.getString("type"));
+                    kost.setFacilities(rs.getString("facilities"));
+                    kost.setImageUrl(rs.getString("image_url"));
+                    kost.setStatus(rs.getInt("status"));
                 }
             }
         } catch (SQLException e) {
@@ -66,16 +73,18 @@ public class EditKostServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String address = request.getParameter("address");
+        String location = request.getParameter("location");
 
         JDBC db = new JDBC();
         db.connect();
 
-        String query = "UPDATE Kost SET name = ?, address = ? WHERE id = ?";
+        String query = "UPDATE Kost SET name = ?, address = ?, location = ? WHERE id = ?";
 
         try (PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
             stmt.setString(1, name);
             stmt.setString(2, address);
-            stmt.setInt(3, id);
+            stmt.setString(3, location);
+            stmt.setInt(4, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

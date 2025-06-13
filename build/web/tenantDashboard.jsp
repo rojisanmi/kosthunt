@@ -7,13 +7,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Tenant Dashboard - KostHunt</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <style>
-            body { margin: 0; padding: 0; font-family: 'Roboto', poppins; background-color: #f4f7f6; }
-            .area-header { width: 100%; height: 60px; background-color: #4A90E2; overflow: hidden; position: relative; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; }
-            .header { color: white; font-size: 30px; font-weight: bold; }
-            .header-nav { margin-left: auto; display: flex; gap: 10px; }
-            .nav-button { background-color: white; color: #4A90E2; padding: 8px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; text-decoration: none; display: inline-block; text-align: center; }
-            .nav-button:hover { background-color: #e0e0e0; }
+            body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background-color: #f4f7f6; }
             .main-container { padding: 20px; }
             .main-container h2 { font-size: 28px; color: #333; }
             .main-container h3 { font-size: 22px; color: #333; margin-top: 30px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
@@ -27,23 +25,7 @@
         </style>
     </head>
     <body>
-        <%
-            String user = (String) session.getAttribute("user");
-        %>
-
-        <div class="area-header">
-            <div class="header">
-                <a href="index.jsp" style="text-decoration: none; color: inherit;">KostHunt</a>
-            </div>
-            <div class="header-nav">
-                <% if (user != null) { %>
-                    <a href="<%= request.getContextPath() %>/profile" class="nav-button">Profile</a>
-                    <a href="<%= request.getContextPath() %>/logout" class="nav-button">Logout</a>
-                <% } else { %>
-                    <a href="login.jsp" class="nav-button">Masuk</a>
-                <% } %>
-            </div>
-        </div>
+        <jsp:include page="header.jsp" />
 
         <div class="main-container">
             <h2>Selamat Datang, Tenant!</h2>
@@ -72,5 +54,17 @@
                 %>
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

@@ -42,7 +42,7 @@ public class RoomListServlet extends HttpServlet {
             }
             
             // Ambil daftar kamar untuk kost tersebut
-            String getRoomsQuery = "SELECT id, number, type, kost_id FROM Room WHERE kost_id = ?";
+            String getRoomsQuery = "SELECT id, number, type, kost_id, price FROM Room WHERE kost_id = ?";
             try (PreparedStatement stmt = db.getConnection().prepareStatement(getRoomsQuery)) {
                 stmt.setInt(1, kostId);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -51,6 +51,7 @@ public class RoomListServlet extends HttpServlet {
                         room.setId(rs.getInt("id"));
                         room.setNumber(rs.getString("number"));
                         room.setType(rs.getString("type"));
+                        room.setPrice(rs.getInt("price"));
                         // PERBAIKAN ADA DI SINI:
                         room.setKostId(rs.getInt("kost_id"));
                         roomList.add(room);

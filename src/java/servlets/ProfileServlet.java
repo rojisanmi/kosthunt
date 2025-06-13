@@ -31,7 +31,7 @@ public class ProfileServlet extends HttpServlet {
         JDBC db = new JDBC();
         db.connect();
 
-        String query = "SELECT id, name, email, role FROM Users WHERE email = ?";
+        String query = "SELECT id, name, email, role, phone FROM Users WHERE email = ?";
         try (PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
             stmt.setString(1, email);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -41,6 +41,7 @@ public class ProfileServlet extends HttpServlet {
                     user.setName(rs.getString("name"));
                     user.setEmail(rs.getString("email"));
                     user.setRole(rs.getString("role"));
+                    user.setPhone(rs.getString("phone"));
                 }
             }
         } catch (SQLException e) {
@@ -57,40 +58,57 @@ public class ProfileServlet extends HttpServlet {
     // Untuk memproses update profil
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        String id = request.getParameter("id");
         String name = request.getParameter("name");
+        String phone = request.getParameter("phone");
         String password = request.getParameter("password");
+
+        // Handle phone number
+        if (phone != null && phone.equals("Belum terdaftar")) {
+            phone = null;
+        }
 
         JDBC db = new JDBC();
         db.connect();
 
         try {
-            // Update nama
-            String updateNameQuery = "UPDATE Users SET name = ? WHERE id = ?";
-            try (PreparedStatement stmt = db.getConnection().prepareStatement(updateNameQuery)) {
+            String query;
+            PreparedStatement stmt;
+
+            if (password != null && !password.trim().isEmpty()) {
+                // Update dengan password baru
+                query = "UPDATE Users SET name = ?, phone = ?, password = ? WHERE id = ?";
+                stmt = db.getConnection().prepareStatement(query);
                 stmt.setString(1, name);
-                stmt.setInt(2, id);
-                stmt.executeUpdate();
+                stmt.setString(2, phone);
+                stmt.setString(3, password);
+                stmt.setString(4, id);
+            } else {
+                // Update tanpa password
+                query = "UPDATE Users SET name = ?, phone = ? WHERE id = ?";
+                stmt = db.getConnection().prepareStatement(query);
+                stmt.setString(1, name);
+                stmt.setString(2, phone);
+                stmt.setString(3, id);
             }
 
-            // Jika kolom password diisi, update juga passwordnya
-            if (password != null && !password.isEmpty()) {
-                String updatePasswordQuery = "UPDATE Users SET password = ? WHERE id = ?";
-                try (PreparedStatement stmt = db.getConnection().prepareStatement(updatePasswordQuery)) {
-                    stmt.setString(1, password);
-                    stmt.setInt(2, id);
-                    stmt.executeUpdate();
-                }
+            int result = stmt.executeUpdate();
+            if (result > 0) {
+                response.sendRedirect("profile?update=success");
+            } else {
+                response.sendRedirect("profile?update=error");
             }
         } catch (SQLException e) {
             e.printStackTrace();
             response.sendRedirect("profile?update=error");
-            return;
         } finally {
             db.disconnect();
         }
-        
-        // Redirect dengan pesan sukses
-        response.sendRedirect("profile?update=success");
     }
 }
