@@ -321,55 +321,25 @@
             </div>
         </section>
         
-        <!-- Features Section -->
-        <section class="features-section">
-            <div class="container">
-                <h2 class="text-center mb-5">Mengapa Memilih KostHunt?</h2>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="feature-card">
-                            <i class="fas fa-search feature-icon"></i>
-                            <h4>Cari Kost Mudah</h4>
-                            <p>Temukan kost sesuai kriteria dengan fitur pencarian yang canggih</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="feature-card">
-                            <i class="fas fa-shield-alt feature-icon"></i>
-                            <h4>Aman & Terpercaya</h4>
-                            <p>Semua kost telah diverifikasi untuk keamanan dan kenyamanan Anda</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="feature-card">
-                            <i class="fas fa-map-marker-alt feature-icon"></i>
-                            <h4>Lokasi Strategis</h4>
-                            <p>Kost dengan lokasi strategis dekat kampus dan fasilitas umum</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
         <!-- Popular Areas Section -->
         <section class="area-kos-container">
             <div class="container">
                 <h2 class="text-center mb-5">Area Kost Populer</h2>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="area-kos" onclick="window.location.href='kost/bandung.jsp'">
+                        <div class="area-kos" onclick="window.location.href='<%= request.getContextPath() %>/search?query=bandung'">
                             <img src="https://atourin.obs.ap-southeast-3.myhuaweicloud.com/images/destination/bandung/gedung-sate-profile1639291114.png" alt="Kost Bandung">
                             <div class="area-kos-text">Kost Bandung</div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="area-kos" onclick="window.location.href='kost/jogja.jsp'">
+                        <div class="area-kos" onclick="window.location.href='<%= request.getContextPath() %>/search?query=jogja'">
                             <img src="https://wallpapercave.com/wp/wp9451651.jpg" alt="Kost Jogja">
                             <div class="area-kos-text">Kost Jogja</div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="area-kos" onclick="window.location.href='kost/solo.jsp'">
+                        <div class="area-kos" onclick="window.location.href='<%= request.getContextPath() %>/search?query=solo'">
                             <img src="https://blog.bankmega.com/wp-content/uploads/2023/01/tempat-wisata-di-kota-solo.jpg" alt="Kost Solo">
                             <div class="area-kos-text" style="text-align: center">Kost Solo</div>
                         </div>
@@ -377,7 +347,7 @@
                 </div>
             </div>
         </section>
-
+        
         <!-- Kost List Section -->
         <section class="area-kos-container">
             <div class="container">
@@ -451,6 +421,37 @@
                 </div>
             </div>
         </section>
+                
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="container">
+                <h2 class="text-center mb-5">Mengapa Memilih KostHunt?</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="fas fa-search feature-icon"></i>
+                            <h4>Cari Kost Mudah</h4>
+                            <p>Temukan kost sesuai kriteria dengan fitur pencarian yang canggih</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="fas fa-shield-alt feature-icon"></i>
+                            <h4>Aman & Terpercaya</h4>
+                            <p>Semua kost telah diverifikasi untuk keamanan dan kenyamanan Anda</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="fas fa-map-marker-alt feature-icon"></i>
+                            <h4>Lokasi Strategis</h4>
+                            <p>Kost dengan lokasi strategis dekat kampus dan fasilitas umum</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
 
         <!-- Tenant Dashboard Section -->
         <%

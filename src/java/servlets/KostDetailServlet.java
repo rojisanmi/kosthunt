@@ -9,13 +9,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/kostDetail")
 public class KostDetailServlet extends HttpServlet {
@@ -25,9 +28,9 @@ public class KostDetailServlet extends HttpServlet {
         Kost kost = null;
         User owner = null;
         List<Room> roomList = new ArrayList<>();
+        List<Map<String, Object>> tenantList = new ArrayList<>();
         String kostIdParam = request.getParameter("id");
         
-        // PERBAIKAN: Deklarasikan kostId di luar try agar bisa diakses oleh kedua query
         int kostId = 0;
 
         if (kostIdParam == null || kostIdParam.trim().isEmpty()) {
@@ -39,13 +42,12 @@ public class KostDetailServlet extends HttpServlet {
         db.connect();
 
         try {
-            kostId = Integer.parseInt(kostIdParam); // Parsing ID di sini
+            kostId = Integer.parseInt(kostIdParam);
 
             // Query untuk detail kost dan owner
             String kostQuery = "SELECT k.*, u.name as owner_name, u.phone as owner_phone, u.email as owner_email " +
                              "FROM kost k JOIN users u ON k.owner_id = u.id WHERE k.id = ?";
             
-            // PERBAIKAN: Gunakan nama variabel yang berbeda (kostStmt)
             try (PreparedStatement kostStmt = db.getConnection().prepareStatement(kostQuery)) {
                 kostStmt.setInt(1, kostId);
                 try (ResultSet rs = kostStmt.executeQuery()) {
@@ -72,7 +74,6 @@ public class KostDetailServlet extends HttpServlet {
             
             // Query untuk mengambil daftar kamar dari kost ini
             String roomQuery = "SELECT * FROM room WHERE kost_id = ?";
-            // PERBAIKAN: Gunakan nama variabel yang berbeda (roomStmt)
             try (PreparedStatement roomStmt = db.getConnection().prepareStatement(roomQuery)) {
                 roomStmt.setInt(1, kostId);
                 try (ResultSet rs = roomStmt.executeQuery()) {
@@ -81,10 +82,32 @@ public class KostDetailServlet extends HttpServlet {
                         room.setId(rs.getInt("id"));
                         room.setNumber(rs.getString("number"));
                         room.setType(rs.getString("type"));
-                        // PERBAIKAN: Sekarang method ini sudah ada di Room.java
                         room.setPrice(rs.getDouble("price"));
                         room.setStatus(rs.getString("status"));
                         roomList.add(room);
+                    }
+                }
+            }
+
+            // Query untuk mengambil informasi tenant
+            String tenantQuery = "SELECT t.id as tenant_id, u.name as tenant_name, u.email as tenant_email, " +
+                               "u.phone as tenant_phone, r.number as room_number, r.type as room_type " +
+                               "FROM tenant t " +
+                               "JOIN users u ON t.user_id = u.id " +
+                               "JOIN room r ON t.room_id = r.id " +
+                               "WHERE r.kost_id = ? AND r.status = 'Occupied'";
+            try (PreparedStatement tenantStmt = db.getConnection().prepareStatement(tenantQuery)) {
+                tenantStmt.setInt(1, kostId);
+                try (ResultSet rs = tenantStmt.executeQuery()) {
+                    while (rs.next()) {
+                        Map<String, Object> tenant = new HashMap<>();
+                        tenant.put("id", rs.getInt("tenant_id"));
+                        tenant.put("name", rs.getString("tenant_name"));
+                        tenant.put("email", rs.getString("tenant_email"));
+                        tenant.put("phone", rs.getString("tenant_phone"));
+                        tenant.put("roomNumber", rs.getString("room_number"));
+                        tenant.put("roomType", rs.getString("room_type"));
+                        tenantList.add(tenant);
                     }
                 }
             }
@@ -100,6 +123,7 @@ public class KostDetailServlet extends HttpServlet {
         request.setAttribute("kost", kost);
         request.setAttribute("owner", owner);
         request.setAttribute("roomList", roomList);
+        request.setAttribute("tenantList", tenantList);
         
         RequestDispatcher dispatcher = request.getRequestDispatcher("kostDetail.jsp");
         dispatcher.forward(request, response);

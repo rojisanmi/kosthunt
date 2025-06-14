@@ -3,6 +3,7 @@
 <%@page import="models.User"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Map"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
@@ -10,6 +11,8 @@
     Kost kost = (Kost) request.getAttribute("kost");
     User owner = (User) request.getAttribute("owner");
     List<Room> roomList = (List<Room>) request.getAttribute("roomList");
+    List<Map<String, Object>> tenantList = (List<Map<String, Object>>) request.getAttribute("tenantList");
+    String userRole = (String) session.getAttribute("role");
     // Formatter untuk tanggal (jika diperlukan)
     SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
 %>
@@ -157,6 +160,59 @@
                             </table>
                         </div>
                     </div>
+
+                    <% if ("Owner".equals(userRole) && tenantList != null && !tenantList.isEmpty()) { %>
+                    <div class="card mt-4">
+                        <div class="card-body p-4">
+                            <h3 class="border-bottom pb-2 mb-3">Daftar Penyewa</h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Penyewa</th>
+                                            <th>No. Kamar</th>
+                                            <th>Tipe Kamar</th>
+                                            <th>Email</th>
+                                            <th>No. Telepon</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for (Map<String, Object> tenant : tenantList) { %>
+                                        <tr>
+                                            <td><strong><%= tenant.get("name") %></strong></td>
+                                            <td><%= tenant.get("roomNumber") %></td>
+                                            <td><%= tenant.get("roomType") %></td>
+                                            <td><%= tenant.get("email") %></td>
+                                            <td>
+                                                <% if (tenant.get("phone") != null && !tenant.get("phone").toString().isEmpty()) { %>
+                                                    <a href="https://wa.me/<%= tenant.get("phone").toString().replaceAll("[^0-9]", "") %>" 
+                                                       class="text-decoration-none" target="_blank">
+                                                        <i class="fab fa-whatsapp text-success"></i> <%= tenant.get("phone").toString().replaceAll("[^0-9]", "") %>
+                                                    </a>
+                                                <% } else { %>
+                                                    <span class="text-muted">-</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <form action="removeTenant" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus penyewa ini?');">
+                                                    <input type="hidden" name="tenantId" value="<%= tenant.get("id") %>">
+                                                    <input type="hidden" name="roomId" value="<%= tenant.get("roomId") %>">
+                                                    <input type="hidden" name="returnUrl" value="kostDetail">
+                                                    <input type="hidden" name="kostId" value="<%= request.getParameter("id") %>">
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-user-minus"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
                 </div>
 
                 <div class="col-lg-4">

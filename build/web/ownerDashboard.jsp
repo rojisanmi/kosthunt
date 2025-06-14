@@ -1,5 +1,6 @@
 <%@page import="models.Kost"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.Map"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="id">
@@ -252,6 +253,63 @@
                 margin-bottom: 1.5rem;
             }
 
+            .tenant-section {
+                margin-top: 3rem;
+                animation: fadeIn 0.5s ease-out;
+            }
+
+            .tenant-section h2 {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: var(--text-color);
+                margin-bottom: 1.5rem;
+            }
+
+            .tenant-table {
+                background-color: var(--white);
+                border-radius: 1rem;
+                box-shadow: var(--shadow);
+                overflow: hidden;
+            }
+
+            .tenant-table th {
+                background-color: var(--light-bg);
+                font-weight: 600;
+                padding: 1rem;
+                color: var(--text-color);
+            }
+
+            .tenant-table td {
+                padding: 1rem;
+                vertical-align: middle;
+            }
+
+            .tenant-table tr:hover {
+                background-color: var(--light-bg);
+            }
+
+            .tenant-kost {
+                font-weight: 600;
+                color: var(--primary-color);
+            }
+
+            .tenant-room {
+                font-weight: 500;
+                color: var(--text-color);
+            }
+
+            .btn-whatsapp {
+                background-color: #25D366;
+                border-color: #25D366;
+                color: white;
+            }
+
+            .btn-whatsapp:hover {
+                background-color: #1DAE53;
+                border-color: #1DAE53;
+                color: white;
+            }
+
             @media (max-width: 768px) {
                 .main-container {
                     padding: 1rem;
@@ -274,6 +332,12 @@
                 .btn-action {
                     flex: 1;
                     justify-content: center;
+                }
+
+                .tenant-table {
+                    display: block;
+                    overflow-x: auto;
+                    white-space: nowrap;
                 }
             }
         </style>
@@ -300,18 +364,16 @@
                     <img class="kost-card-img" src="https://placehold.co/600x400/2563eb/FFFFFF?text=<%= java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" alt="Foto <%= kost.getName() %>">
                     <div class="kost-card-body">
                         <div class="card-body d-flex flex-column">
-                            <%-- PERBAIKAN: Nama dan rating disejajarkan dalam satu baris --%>
                             <div class="d-flex justify-content-between align-items-baseline mb-2">
                                 <h5 class="card-title mb-0"><%= kost.getName() %></h5>
-                                <span class="d-flex align-items-center" style="color: #ffc107;"> <%-- Memberi warna kuning pada bintang dan angka --%>
-                                    <i class="fas fa-star fa-sm me-1"></i> <%-- Menggunakan tag <i> untuk ikon --%>
+                                <span class="d-flex align-items-center" style="color: #ffc107;">
+                                    <i class="fas fa-star fa-sm me-1"></i>
                                     <span class="fw-bold"><%= String.format("%.1f", kost.getAvgRating()) %></span>
                                 </span>
                             </div>
 
                             <p class="card-text text-muted small"><%= kost.getAddress() %></p>
 
-                            <%-- mt-auto akan mendorong elemen ini ke bagian bawah kartu --%>
                             <div class="mt-auto pt-3"> 
                                 <a href="kostDetail?id=<%= kost.getId() %>" class="btn btn-outline-primary w-100">Lihat Detail</a>
                             </div>
@@ -347,6 +409,136 @@
                 <%
                     }
                 %>
+            </div>
+
+            <!-- Daftar Penyewa -->
+            <div class="tenant-section">
+                <h2>Daftar Penyewa</h2>
+                <%
+                    List<Map<String, Object>> tenantList = (List<Map<String, Object>>) request.getAttribute("tenantList");
+                    if (tenantList != null && !tenantList.isEmpty()) {
+                %>
+                <div class="tenant-table">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Nama Penyewa</th>
+                                <th>Kost</th>
+                                <th>No. Kamar</th>
+                                <th>Tipe Kamar</th>
+                                <th>Email</th>
+                                <th>No. Telepon</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (Map<String, Object> tenant : tenantList) { %>
+                            <tr>
+                                <td><strong><%= tenant.get("name") %></strong></td>
+                                <td>
+                                    <div class="tenant-kost"><%= tenant.get("kostName") %></div>
+                                    <div class="text-muted small"><%= tenant.get("kostAddress") %></div>
+                                </td>
+                                <td><span class="tenant-room"><%= tenant.get("roomNumber") %></span></td>
+                                <td><%= tenant.get("roomType") %></td>
+                                <td><%= tenant.get("email") %></td>
+                                <td>
+                                    <% if (tenant.get("phone") != null && !tenant.get("phone").toString().isEmpty()) { %>
+                                        <a href="https://wa.me/<%= tenant.get("phone").toString().replaceAll("[^0-9]", "") %>" 
+                                           class="btn btn-whatsapp btn-sm" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> <%= tenant.get("phone") %>
+                                        </a>
+                                    <% } else { %>
+                                        <span class="text-muted">-</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <form action="removeTenant" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus penyewa ini?');">
+                                        <input type="hidden" name="tenantId" value="<%= tenant.get("tenantId") %>">
+                                        <input type="hidden" name="roomId" value="<%= tenant.get("roomId") %>">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-user-minus"></i> Hapus
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                <div class="empty-state">
+                    <p>Belum ada penyewa yang terdaftar di kost Anda.</p>
+                </div>
+                <% } %>
+            </div>
+
+            <!-- Daftar Penyewa yang Belum Membayar -->
+            <div class="tenant-section">
+                <h2>Daftar Penyewa yang Belum Membayar</h2>
+                <%
+                    List<Map<String, Object>> unpaidTenantList = (List<Map<String, Object>>) request.getAttribute("unpaidTenantList");
+                    if (unpaidTenantList != null && !unpaidTenantList.isEmpty()) {
+                %>
+                <div class="tenant-table">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Nama Penyewa</th>
+                                <th>Kost</th>
+                                <th>No. Kamar</th>
+                                <th>Pembayaran Terakhir</th>
+                                <th>Keterlambatan</th>
+                                <th>Kontak</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (Map<String, Object> tenant : unpaidTenantList) { 
+                                java.util.Date lastPaymentDate = (java.util.Date) tenant.get("lastPaymentDate");
+                                int daysOverdue = (int) tenant.get("daysOverdue")-30;
+                                String overdueClass = daysOverdue > 60 ? "text-danger" : "text-warning";
+                                if (daysOverdue >= 0) {
+                            %>
+                            <tr>
+                                <td><strong><%= tenant.get("name") %></strong></td>
+                                <td>
+                                    <div class="tenant-kost"><%= tenant.get("kostName") %></div>
+                                    <div class="text-muted small"><%= tenant.get("kostAddress") %></div>
+                                </td>
+                                <td><span class="tenant-room"><%= tenant.get("roomNumber") %></span></td>
+                                <td>
+                                    <% if (daysOverdue != 0) { %>
+                                        <%= new java.text.SimpleDateFormat("dd MMMM yyyy").format(lastPaymentDate) %>
+                                    <% } else { %>
+                                        <span class="text-danger">Sudah membayar</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <span class="<%= overdueClass %>">
+                                        <i class="fas fa-clock me-1"></i>
+                                        <%= daysOverdue %> hari
+                                    </span>
+                                </td>
+                                <td>
+                                    <% if (tenant.get("phone") != null && !tenant.get("phone").toString().isEmpty()) { %>
+                                        <a href="https://wa.me/<%= tenant.get("phone").toString().replaceAll("[^0-9]", "") %>" 
+                                           class="btn btn-whatsapp btn-sm" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> <%= tenant.get("phone") %>
+                                        </a>
+                                    <% } else { %>
+                                        <span class="text-muted">-</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% } } %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                <div class="empty-state">
+                    <p>Semua penyewa sudah membayar tepat waktu.</p>
+                </div>
+                <% } %>
             </div>
         </div>
 
