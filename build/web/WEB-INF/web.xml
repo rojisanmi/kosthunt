@@ -84,6 +84,10 @@
         <servlet-name>ProcessPaymentServlet</servlet-name>
         <servlet-class>servlets.ProcessPaymentServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RateRoomServlet</servlet-name>
+        <servlet-class>servlets.RateRoomServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AddTenantServlet</servlet-name>
         <url-pattern>/AddTenantServlet</url-pattern>
@@ -167,6 +171,10 @@
     <servlet-mapping>
         <servlet-name>ProcessPaymentServlet</servlet-name>
         <url-pattern>/ProcessPaymentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RateRoomServlet</servlet-name>
+        <url-pattern>/RateRoomServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

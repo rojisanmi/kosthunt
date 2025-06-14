@@ -394,7 +394,7 @@
                             Class.forName("com.mysql.cj.jdbc.Driver");
                             Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
                             
-                            String query = "SELECT id, name, address, status, price, image_url FROM Kost WHERE status != 0";
+                            String query = "SELECT id, name, address, status, price, image_url, avg_rating FROM Kost WHERE status != 0";
                             PreparedStatement stmt = conn.prepareStatement(query);
                             ResultSet rs = stmt.executeQuery();
                             
@@ -421,6 +421,12 @@
                                         <i class="fas fa-map-marker-alt"></i>
                                         <%= rs.getString("address") %>
                                     </div>
+
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-star text-warning"></i> 
+                                        <span class="text-muted ms-1">(<%= String.format("%.1f", rs.getDouble("avg_rating")) %>)</span>
+                                    </div>
+
                                     <div class="kost-price">
                                         Rp <%= String.format("%,d", rs.getInt("price")) %> / bulan
                                     </div>

@@ -13,7 +13,9 @@ public class Kost {
     private String createdAt;
     private String address;
     private int status;
-    
+    private double avgRating; // Pastikan ini ada
+
+    // Semua getter & setter
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public int getOwnerId() { return ownerId; }
@@ -38,4 +40,6 @@ public class Kost {
     public void setAddress(String address) { this.address = address; }
     public int getStatus() { return status; }
     public void setStatus(int status) { this.status = status; }
+    public double getAvgRating() { return avgRating; }
+    public void setAvgRating(double avgRating) { this.avgRating = avgRating; }
 }

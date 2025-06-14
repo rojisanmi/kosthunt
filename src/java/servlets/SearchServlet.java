@@ -106,6 +106,7 @@ public class SearchServlet extends HttpServlet {
                         kost.setImageUrl(rs.getString("image_url"));
                         kost.setAddress(rs.getString("address"));
                         kost.setStatus(rs.getInt("status"));
+                        kost.setAvgRating(rs.getDouble("avg_rating"));
                         kostList.add(kost);
                     }
                 }

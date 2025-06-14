@@ -8,6 +8,7 @@ public class Room {
     private int kostId;
     private double price;
     private String status;
+    private double rating;
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -23,4 +24,6 @@ public class Room {
     public void setPrice(double price) { this.price = price; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public double getRating() { return rating; }
+    public void setRating(double rating) { this.rating = rating; }
 }

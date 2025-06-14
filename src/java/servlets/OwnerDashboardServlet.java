@@ -36,7 +36,7 @@ public class OwnerDashboardServlet extends HttpServlet {
         db.connect();
 
         // Menggunakan JOIN untuk mengambil data kost langsung berdasarkan email owner dalam satu kueri
-        String query = "SELECT k.id, k.name, k.address " +
+        String query = "SELECT k.id, k.name, k.address, k.avg_rating " +
                        "FROM Kost k " +
                        "JOIN Users u ON k.owner_id = u.id " +
                        "WHERE u.email = ?";
@@ -51,6 +51,7 @@ public class OwnerDashboardServlet extends HttpServlet {
                     kost.setId(rs.getInt("id"));
                     kost.setName(rs.getString("name"));
                     kost.setAddress(rs.getString("address"));
+                    kost.setAvgRating(rs.getDouble("avg_rating"));
                     kostList.add(kost);
                 }
             }
