@@ -154,6 +154,12 @@
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title"><%= kost.getName() %></h5>
                             <p class="card-text text-muted small mb-3"><i class="fas fa-map-marker-alt fa-fw"></i> <%= kost.getAddress() %></p>
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-star text-warning me-1"></i>
+                                <span class="text-muted small">
+                                    <%= String.format("%.1f", kost.getAvgRating()) %>
+                                </span>
+                            </div>
                             <div class="mt-auto">
                                 <p class="card-text fw-bold fs-5 text-primary">Rp <%= String.format("%,.0f", kost.getPrice()) %> / bulan</p>
                                 <a href="kostDetail?id=<%= kost.getId() %>" class="btn btn-outline-primary w-100">Lihat Detail</a>

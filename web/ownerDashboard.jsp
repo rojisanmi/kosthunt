@@ -299,8 +299,23 @@
                 <div class="kost-card">
                     <img class="kost-card-img" src="https://placehold.co/600x400/2563eb/FFFFFF?text=<%= java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" alt="Foto <%= kost.getName() %>">
                     <div class="kost-card-body">
-                        <h4><%= kost.getName() %></h4>
-                        <p><%= kost.getAddress() %></p>
+                        <div class="card-body d-flex flex-column">
+                            <%-- PERBAIKAN: Nama dan rating disejajarkan dalam satu baris --%>
+                            <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                <h5 class="card-title mb-0"><%= kost.getName() %></h5>
+                                <span class="d-flex align-items-center" style="color: #ffc107;"> <%-- Memberi warna kuning pada bintang dan angka --%>
+                                    <i class="fas fa-star fa-sm me-1"></i> <%-- Menggunakan tag <i> untuk ikon --%>
+                                    <span class="fw-bold"><%= String.format("%.1f", kost.getAvgRating()) %></span>
+                                </span>
+                            </div>
+
+                            <p class="card-text text-muted small"><%= kost.getAddress() %></p>
+
+                            <%-- mt-auto akan mendorong elemen ini ke bagian bawah kartu --%>
+                            <div class="mt-auto pt-3"> 
+                                <a href="kostDetail?id=<%= kost.getId() %>" class="btn btn-outline-primary w-100">Lihat Detail</a>
+                            </div>
+                        </div>
                     </div>
                     <div class="kost-card-footer">
                         <a href="<%= request.getContextPath() %>/roomList?kostId=<%= kost.getId() %>" class="btn-action btn-info">

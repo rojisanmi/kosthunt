@@ -60,6 +60,7 @@ public class KostDetailServlet extends HttpServlet {
                         kost.setFacilities(rs.getString("facilities"));
                         kost.setImageUrl(rs.getString("image_url"));
                         kost.setAddress(rs.getString("address"));
+                        kost.setAvgRating(rs.getDouble("avg_rating"));
 
                         owner = new User();
                         owner.setName(rs.getString("owner_name"));

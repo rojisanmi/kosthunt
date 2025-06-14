@@ -66,9 +66,9 @@
                                 <form action="rateRoom" method="post">
                                     <%-- PERBAIKAN: Nilai default rating adalah 0 --%>
                                     <input type="hidden" name="roomId" value="<%= rentedRoom.getId() %>">
-                                    <input type="hidden" name="rating" id="rating-value-<%= rentedRoom.getId() %>" value="0" required>
+                                    <input type="hidden" name="rating" id="rating-value-<%= rentedRoom.getId() %>" value="<%= (int) rentedRoom.getRating() %>" required>
                                     
-                                    <label class="form-label d-block text-center mb-2">Beri Rating Pengalaman Anda</label>
+                                    <label class="form-label d-block text-center mb-2">Rating</label>
                                     
                                     <%-- PERBAIKAN: Struktur HTML bintang menggunakan ikon 'far fa-star' (kosong) --%>
                                     <div class="rating-stars d-flex justify-content-center mb-3" data-rating-id="<%= rentedRoom.getId() %>">
@@ -91,45 +91,62 @@
         <% } %>
     </div>
     
-    <%-- PERBAIKAN: Logika JavaScript disempurnakan --%>
     <script>
+        // Fungsi updateStars tidak berubah
+        function updateStars(stars, value) {
+            stars.forEach(star => {
+                if (star.dataset.value <= value) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                    star.classList.add('selected'); // <-- TAMBAHKAN INI
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                    star.classList.remove('selected'); // <-- TAMBAHKAN INI
+                }
+            });
+        }
+        
+        // Fungsi untuk interaksi mouse
         document.querySelectorAll('.rating-stars').forEach(starContainer => {
             const stars = Array.from(starContainer.children);
             const ratingId = starContainer.dataset.ratingId;
             const ratingInput = document.getElementById('rating-value-' + ratingId);
+            let currentRating = ratingInput.value; // Simpan rating yang sudah dipilih
 
-            starContainer.addEventListener('mouseout', () => {
-                const selectedValue = ratingInput.value;
-                updateStars(stars, selectedValue);
+            // Event saat mouse berada di atas bintang
+            starContainer.addEventListener('mouseover', e => {
+                if(e.target.classList.contains('star')) {
+                    const hoverValue = e.target.dataset.value;
+                    updateStars(stars, hoverValue);
+                }
             });
 
-            stars.forEach(star => {
-                star.addEventListener('mouseover', () => {
-                    const hoverValue = star.dataset.value;
-                    updateStars(stars, hoverValue);
-                });
+            // Event saat mouse meninggalkan area bintang
+            starContainer.addEventListener('mouseleave', () => {
+                updateStars(stars, currentRating); // Kembalikan ke rating yang sudah dipilih/disimpan
+            });
 
-                star.addEventListener('click', () => {
-                    const selectedValue = star.dataset.value;
-                    ratingInput.value = selectedValue;
-                    updateStars(stars, selectedValue);
-                });
+            // Event saat bintang diklik
+            starContainer.addEventListener('click', e => {
+                if(e.target.classList.contains('star')) {
+                    currentRating = e.target.dataset.value;
+                    ratingInput.value = currentRating; // Set nilai ke input tersembunyi
+                    updateStars(stars, currentRating);
+                }
             });
         });
 
-        function updateStars(stars, value) {
-            stars.forEach(star => {
-                if (star.dataset.value <= value) {
-                    star.classList.remove('far'); // Hapus ikon bintang kosong
-                    star.classList.add('fas');   // Tambah ikon bintang penuh
-                    star.classList.add('selected');
-                } else {
-                    star.classList.remove('fas'); // Hapus ikon bintang penuh
-                    star.classList.add('far');  // Tambah ikon bintang kosong
-                    star.classList.remove('selected');
-                }
+        // PERBAIKAN: Inisialisasi bintang saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.rating-stars').forEach(starContainer => {
+                const ratingId = starContainer.dataset.ratingId;
+                const ratingInput = document.getElementById('rating-value-' + ratingId);
+                const initialValue = ratingInput.value;
+                const stars = Array.from(starContainer.children);
+                updateStars(stars, initialValue);
             });
-        }
+        });
     </script>
 </body>
 </html>

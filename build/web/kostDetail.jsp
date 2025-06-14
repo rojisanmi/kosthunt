@@ -74,7 +74,14 @@
     <main class="container py-5">
         <% if (kost != null && owner != null) { %>
             <div class="mb-4">
-                <h1 class="fw-bold"><%= kost.getName() %></h1>
+                <div class="d-flex align-items-baseline">
+                    <h1 class="fw-bold mb-0"><%= kost.getName() %></h1>
+                    <%-- Kode ini menampilkan ikon bintang kuning dan nilai ratingnya --%>
+                    <span class="ms-3" style="color: #f59e0b; font-size: 1.2rem;">
+                        <i class="fas fa-star"></i>
+                        <span class="fw-bold"><%= String.format("%.1f", kost.getAvgRating()) %></span>
+                    </span>
+                </div>
                 <p class="lead text-muted"><i class="fas fa-map-marker-alt fa-fw me-2"></i><%= kost.getAddress() %>, <%= kost.getLocation() %></p>
             </div>
             

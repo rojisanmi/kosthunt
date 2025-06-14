@@ -12,7 +12,6 @@ import javax.servlet.http.HttpSession;
 
 @WebServlet("/rateRoom")
 public class RateRoomServlet extends HttpServlet {
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
@@ -28,56 +27,42 @@ public class RateRoomServlet extends HttpServlet {
 
             JDBC db = new JDBC();
             db.connect();
-
             try {
-                // Gunakan transaksi untuk memastikan semua query berhasil
                 db.getConnection().setAutoCommit(false);
 
-                // 1. Update rating di tabel 'room'
-                String updateRoomRatingQuery = "UPDATE room SET rating = ? WHERE id = ?";
-                try (PreparedStatement stmt = db.getConnection().prepareStatement(updateRoomRatingQuery)) {
+                String q1 = "UPDATE room SET rating = ? WHERE id = ?";
+                try (PreparedStatement stmt = db.getConnection().prepareStatement(q1)) {
                     stmt.setDouble(1, rating);
                     stmt.setInt(2, roomId);
                     stmt.executeUpdate();
                 }
 
-                // 2. Dapatkan kost_id dari kamar yang di-rate
-                String getKostIdQuery = "SELECT kost_id FROM room WHERE id = ?";
-                try (PreparedStatement stmt = db.getConnection().prepareStatement(getKostIdQuery)) {
+                String q2 = "SELECT kost_id FROM room WHERE id = ?";
+                try (PreparedStatement stmt = db.getConnection().prepareStatement(q2)) {
                     stmt.setInt(1, roomId);
                     try (ResultSet rs = stmt.executeQuery()) {
-                        if (rs.next()) {
-                            kostId = rs.getInt("kost_id");
-                        }
+                        if (rs.next()) kostId = rs.getInt("kost_id");
                     }
                 }
                 
-                // 3. Hitung ulang rata-rata rating dan update tabel 'kost'
                 if (kostId != -1) {
-                    String updateAvgRatingQuery = "UPDATE kost k SET k.avg_rating = " +
-                                                  "(SELECT AVG(r.rating) FROM room r WHERE r.kost_id = ? AND r.rating > 0) " +
-                                                  "WHERE k.id = ?";
-                    try (PreparedStatement stmt = db.getConnection().prepareStatement(updateAvgRatingQuery)) {
+                    String q3 = "UPDATE kost SET avg_rating = (SELECT AVG(rating) FROM room WHERE kost_id = ? AND rating > 0) WHERE id = ?";
+                    try (PreparedStatement stmt = db.getConnection().prepareStatement(q3)) {
                         stmt.setInt(1, kostId);
                         stmt.setInt(2, kostId);
                         stmt.executeUpdate();
                     }
                 }
-
-                db.getConnection().commit(); // Simpan semua perubahan
-
-            } catch (SQLException e) {
+                db.getConnection().commit();
+            } catch (SQLException e) { 
                 try { db.getConnection().rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
                 e.printStackTrace();
-            } finally {
+            } finally { 
                 try { if(db.getConnection() != null) db.getConnection().setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
-                db.disconnect();
+                db.disconnect(); 
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
         
-        // Arahkan kembali ke dashboard dengan pesan sukses
         response.sendRedirect("tenantDashboard?rating=success");
     }
 }
