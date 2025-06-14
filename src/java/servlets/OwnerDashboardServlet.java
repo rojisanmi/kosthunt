@@ -64,8 +64,8 @@ public class OwnerDashboardServlet extends HttpServlet {
 
             // Query untuk mengambil semua tenant dari kost yang dimiliki owner
             String tenantQuery = "SELECT t.id as tenant_id, u.name as tenant_name, u.email as tenant_email, " +
-                               "u.phone as tenant_phone, r.number as room_number, r.type as room_type, " +
-                               "k.name as kost_name, k.address as kost_address " +
+                               "u.phone as tenant_phone, r.id as room_id, r.number as room_number, r.type as room_type, " +
+                               "k.id as kost_id, k.name as kost_name, k.address as kost_address " +
                                "FROM tenant t " +
                                "JOIN users u ON t.user_id = u.id " +
                                "JOIN room r ON t.room_id = r.id " +
@@ -83,8 +83,10 @@ public class OwnerDashboardServlet extends HttpServlet {
                         tenant.put("name", rs.getString("tenant_name"));
                         tenant.put("email", rs.getString("tenant_email"));
                         tenant.put("phone", rs.getString("tenant_phone"));
+                        tenant.put("roomId", rs.getInt("room_id"));
                         tenant.put("roomNumber", rs.getString("room_number"));
                         tenant.put("roomType", rs.getString("room_type"));
+                        tenant.put("kostId", rs.getInt("kost_id"));
                         tenant.put("kostName", rs.getString("kost_name"));
                         tenant.put("kostAddress", rs.getString("kost_address"));
                         tenantList.add(tenant);

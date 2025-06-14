@@ -346,6 +346,22 @@
         <jsp:include page="header.jsp" />
 
         <div class="main-container">
+            <% if (session.getAttribute("errorMessage") != null) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= session.getAttribute("errorMessage") %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <% session.removeAttribute("errorMessage"); %>
+            <% } %>
+            
+            <% if (session.getAttribute("successMessage") != null) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <%= session.getAttribute("successMessage") %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <% session.removeAttribute("successMessage"); %>
+            <% } %>
+
             <div class="dashboard-header">
                 <h2>Kelola Kost Anda</h2>
                 <a href="kost/addKost.jsp" class="btn-add">
@@ -411,7 +427,6 @@
                 %>
             </div>
 
-            <!-- Daftar Penyewa -->
             <div class="tenant-section">
                 <h2>Daftar Penyewa</h2>
                 <%
@@ -453,9 +468,11 @@
                                     <% } %>
                                 </td>
                                 <td>
-                                    <form action="removeTenant" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus penyewa ini?');">
-                                        <input type="hidden" name="tenantId" value="<%= tenant.get("tenantId") %>">
+                                    <form action="removeTenant" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus penyewa ini? Kamar akan menjadi kosong dan tersedia.');">
+                                        <input type="hidden" name="tenantId" value="<%= tenant.get("id") %>">
                                         <input type="hidden" name="roomId" value="<%= tenant.get("roomId") %>">
+                                        <input type="hidden" name="kostId" value="<%= tenant.get("kostId") %>">
+                                        <input type="hidden" name="returnUrl" value="ownerDashboard">
                                         <button type="submit" class="btn btn-danger btn-sm">
                                             <i class="fas fa-user-minus"></i> Hapus
                                         </button>
@@ -473,7 +490,6 @@
                 <% } %>
             </div>
 
-            <!-- Daftar Penyewa yang Belum Membayar -->
             <div class="tenant-section">
                 <h2>Daftar Penyewa yang Belum Membayar</h2>
                 <%
@@ -495,9 +511,12 @@
                         <tbody>
                             <% for (Map<String, Object> tenant : unpaidTenantList) { 
                                 java.util.Date lastPaymentDate = (java.util.Date) tenant.get("lastPaymentDate");
-                                int daysOverdue = (int) tenant.get("daysOverdue")-30;
-                                String overdueClass = daysOverdue > 60 ? "text-danger" : "text-warning";
-                                if (daysOverdue >= 0) {
+                                int daysOverdue = (int) tenant.get("daysOverdue");
+                                int effectiveDaysOverdue = daysOverdue - 30; // Assuming 30 days is the payment cycle
+
+                                String overdueClass = effectiveDaysOverdue > 60 ? "text-danger" : (effectiveDaysOverdue > 0 ? "text-warning" : "");
+                                
+                                if (effectiveDaysOverdue >= 0) { // Only show if genuinely overdue (or on due date if 0)
                             %>
                             <tr>
                                 <td><strong><%= tenant.get("name") %></strong></td>
@@ -507,16 +526,16 @@
                                 </td>
                                 <td><span class="tenant-room"><%= tenant.get("roomNumber") %></span></td>
                                 <td>
-                                    <% if (daysOverdue != 0) { %>
+                                    <% if (lastPaymentDate != null) { %>
                                         <%= new java.text.SimpleDateFormat("dd MMMM yyyy").format(lastPaymentDate) %>
                                     <% } else { %>
-                                        <span class="text-danger">Sudah membayar</span>
+                                        <span class="text-danger">Belum ada pembayaran</span>
                                     <% } %>
                                 </td>
                                 <td>
                                     <span class="<%= overdueClass %>">
                                         <i class="fas fa-clock me-1"></i>
-                                        <%= daysOverdue %> hari
+                                        <%= effectiveDaysOverdue %> hari
                                     </span>
                                 </td>
                                 <td>
