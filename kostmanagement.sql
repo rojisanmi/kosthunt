@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2025 at 05:27 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Generation Time: Jun 14, 2025 at 06:09 AM
+-- Server version: 10.4.17-MariaDB
+-- PHP Version: 8.0.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -36,23 +36,24 @@ CREATE TABLE `kost` (
   `location` varchar(255) DEFAULT NULL,
   `type` varchar(50) DEFAULT NULL,
   `facilities` text DEFAULT NULL,
+  `avg_rating` decimal(3,2) NOT NULL DEFAULT 0.00,
   `image_url` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `address` varchar(255) NOT NULL,
   `status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `kost`
 --
 
-INSERT INTO `kost` (`id`, `owner_id`, `name`, `description`, `price`, `location`, `type`, `facilities`, `image_url`, `created_at`, `address`, `status`) VALUES
-(1, 1, 'Kost A', 'Kost nyaman dengan fasilitas lengkap dan lokasi strategis', 1500000.00, 'Jl. Kost No.1, Depok', 'Putri', 'AC, WiFi, Kamar Mandi Dalam, Dapur', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-12 10:02:23', 'Jl. Kost No.1, Depok', 3),
-(2, 1, 'Kost B', 'Kost nyaman dengan fasilitas lengkap dan lokasi strategis', 1200000.00, 'Jl. Kost No.2, Depok', 'Putra', 'AC, WiFi, Kamar Mandi Dalam, Dapur', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-12 10:02:23', 'Jl. Kost No.2, Depok', 1),
-(3, 1, 'Kost C', 'sasa', 100000.00, 'sas', 'Putra', 'Kamar Mandi Dalam, Dapur', '', '2025-06-12 11:35:04', 'kottol5', 1),
-(4, 5, 'Kost D', 'ewe', 1000000.00, 'sas', 'Campur', 'Kamar Mandi Dalam, AC', '', '2025-06-12 11:55:33', 'ewew', 1),
-(5, 6, 'Kost Banjir', 'deket telkom', 2000000.00, 'mantaplah pokoknya', 'Putra', 'Kamar Mandi Dalam, AC, WiFi, Dapur, Parkir, CCTV', 'https://example.com/image.jpg', '2025-06-12 12:17:53', 'Jl. Sukabirus', 1),
-(6, 1, 'Kost Banjir', 'ewe', 1999999.00, 'mantaplah pokoknya', 'Putra', 'Kamar Mandi Dalam, Dapur', 'https://example.com/image.jpg', '2025-06-12 12:32:27', 'ewe', 1);
+INSERT INTO `kost` (`id`, `owner_id`, `name`, `description`, `price`, `location`, `type`, `facilities`, `avg_rating`, `image_url`, `created_at`, `address`, `status`) VALUES
+(1, 1, 'Kost A', 'Kost nyaman dengan fasilitas lengkap dan lokasi strategis', '1500000.00', 'Jl. Kost No.1, Depok', 'Putri', 'AC, WiFi, Kamar Mandi Dalam, Dapur', '0.00', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-12 10:02:23', 'Jl. Kost No.1, Depok', 3),
+(2, 1, 'Kost B', 'Kost nyaman dengan fasilitas lengkap dan lokasi strategis', '1200000.00', 'Jl. Kost No.2, Depok', 'Putra', 'AC, WiFi, Kamar Mandi Dalam, Dapur', '5.00', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-12 10:02:23', 'Jl. Kost No.2, Depok', 1),
+(3, 1, 'Kost C', 'sasa', '100000.00', 'sas', 'Putra', 'Kamar Mandi Dalam, Dapur', '0.00', '', '2025-06-12 11:35:04', 'kottol5', 1),
+(4, 5, 'Kost D', 'ewe', '1000000.00', 'sas', 'Campur', 'Kamar Mandi Dalam, AC', '0.00', '', '2025-06-12 11:55:33', 'ewew', 1),
+(5, 6, 'Kost Banjir', 'deket telkom', '2000000.00', 'mantaplah pokoknya', 'Putra', 'Kamar Mandi Dalam, AC, WiFi, Dapur, Parkir, CCTV', '0.00', 'https://example.com/image.jpg', '2025-06-12 12:17:53', 'Jl. Sukabirus', 1),
+(6, 1, 'Kost Banjir', 'ewe', '1999999.00', 'mantaplah pokoknya', 'Putra', 'Kamar Mandi Dalam, Dapur', '0.00', 'https://example.com/image.jpg', '2025-06-12 12:32:27', 'ewe', 1);
 
 -- --------------------------------------------------------
 
@@ -65,15 +66,15 @@ CREATE TABLE `payment` (
   `tenant_id` int(11) DEFAULT NULL,
   `amount` decimal(10,2) NOT NULL,
   `payment_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `payment`
 --
 
 INSERT INTO `payment` (`id`, `tenant_id`, `amount`, `payment_date`) VALUES
-(1, 1, 500000.00, '2025-05-01'),
-(2, 2, 600000.00, '2025-05-01');
+(3, 21, '1200000.00', '2025-06-13'),
+(4, 22, '1800000.00', '2025-06-14');
 
 -- --------------------------------------------------------
 
@@ -87,19 +88,20 @@ CREATE TABLE `room` (
   `number` varchar(50) NOT NULL,
   `type` varchar(50) NOT NULL,
   `price` decimal(10,2) DEFAULT 0.00,
+  `rating` decimal(3,1) DEFAULT 0.0,
   `status` enum('Available','Occupied') NOT NULL DEFAULT 'Available'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `room`
 --
 
-INSERT INTO `room` (`id`, `kost_id`, `number`, `type`, `price`, `status`) VALUES
-(1, 1, '101', 'Single', 1500000.00, 'Available'),
-(2, 1, '102', 'Double', 2000000.00, 'Available'),
-(3, 2, '201', 'Single', 1200000.00, 'Available'),
-(4, 2, '202', 'Double', 1800000.00, 'Available'),
-(6, 3, '69', 'Double', 0.00, 'Available');
+INSERT INTO `room` (`id`, `kost_id`, `number`, `type`, `price`, `rating`, `status`) VALUES
+(1, 1, '101', 'Single', '1500000.00', '0.0', 'Available'),
+(2, 1, '102', 'Double', '2000000.00', '0.0', 'Available'),
+(3, 2, '201', 'Single', '1200000.00', '5.0', 'Occupied'),
+(4, 2, '202', 'Double', '1800000.00', '0.0', 'Occupied'),
+(6, 3, '69', 'Double', '1200000.00', '0.0', 'Available');
 
 -- --------------------------------------------------------
 
@@ -110,16 +112,16 @@ INSERT INTO `room` (`id`, `kost_id`, `number`, `type`, `price`, `status`) VALUES
 CREATE TABLE `tenant` (
   `id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `kost_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `room_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tenant`
 --
 
-INSERT INTO `tenant` (`id`, `user_id`, `kost_id`) VALUES
-(1, 2, 1),
-(2, 3, 2);
+INSERT INTO `tenant` (`id`, `user_id`, `room_id`) VALUES
+(21, 2, 3),
+(22, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -134,7 +136,7 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `role` enum('Owner','Tenant') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
@@ -179,7 +181,7 @@ ALTER TABLE `room`
 ALTER TABLE `tenant`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
-  ADD KEY `kost_id` (`kost_id`);
+  ADD KEY `tenant_fk_room` (`room_id`);
 
 --
 -- Indexes for table `users`
@@ -202,7 +204,7 @@ ALTER TABLE `kost`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `room`
@@ -214,7 +216,7 @@ ALTER TABLE `room`
 -- AUTO_INCREMENT for table `tenant`
 --
 ALTER TABLE `tenant`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -248,8 +250,8 @@ ALTER TABLE `room`
 -- Constraints for table `tenant`
 --
 ALTER TABLE `tenant`
-  ADD CONSTRAINT `tenant_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `tenant_ibfk_2` FOREIGN KEY (`kost_id`) REFERENCES `kost` (`id`);
+  ADD CONSTRAINT `tenant_fk_room` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `tenant_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
