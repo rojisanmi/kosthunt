@@ -377,7 +377,7 @@
                         for (Kost kost : kostList) {
                 %>
                 <div class="kost-card">
-                    <img class="kost-card-img" src="https://placehold.co/600x400/2563eb/FFFFFF?text=<%= java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" alt="Foto <%= kost.getName() %>">
+                    <img class="kost-card-img" src="<%= kost.getImageUrl() != null && !kost.getImageUrl().isEmpty() ? kost.getImageUrl() : "https://placehold.co/600x400/2563eb/FFFFFF?text=" + java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" alt="Foto <%= kost.getName() %>">
                     <div class="kost-card-body">
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-baseline mb-2">

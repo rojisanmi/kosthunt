@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 14, 2025 at 11:22 AM
+-- Generation Time: Jun 14, 2025 at 06:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -48,12 +48,12 @@ CREATE TABLE `kost` (
 --
 
 INSERT INTO `kost` (`id`, `owner_id`, `name`, `description`, `price`, `location`, `type`, `facilities`, `avg_rating`, `image_url`, `created_at`, `address`, `status`) VALUES
-(1, 1, 'Kost A', 'Kost nyaman dengan fasilitas lengkap dan lokasi strategis', 1500000.00, 'Jl. Kost No.1, Depok', 'Putri', 'AC, WiFi, Kamar Mandi Dalam, Dapur', 4.50, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-12 10:02:23', 'Jl. Kost No.1, Depok', 3),
-(2, 1, 'Kost B', 'Kost nyaman dengan fasilitas lengkap dan lokasi strategis', 1200000.00, 'Jl. Kost No.2, Depok', 'Putra', 'AC, WiFi, Kamar Mandi Dalam, Dapur', 4.00, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-12 10:02:23', 'Jl. Kost No.2, Depok', 1),
-(3, 1, 'Kost C', 'sasa', 100000.00, 'sas', 'Putra', 'Kamar Mandi Dalam, Dapur', 2.00, '', '2025-06-12 11:35:04', 'kottol5', 1),
-(4, 5, 'Kost D', 'ewe', 1000000.00, 'sas', 'Campur', 'Kamar Mandi Dalam, AC', 0.00, '', '2025-06-12 11:55:33', 'ewew', 1),
-(5, 6, 'Kost Banjir', 'deket telkom', 2000000.00, 'mantaplah pokoknya', 'Putra', 'Kamar Mandi Dalam, AC, WiFi, Dapur, Parkir, CCTV', 0.00, 'https://example.com/image.jpg', '2025-06-12 12:17:53', 'Jl. Sukabirus', 1),
-(6, 1, 'Kost Banjir', 'ewe', 1999999.00, 'mantaplah pokoknya', 'Putra', 'Kamar Mandi Dalam, Dapur', 0.00, 'https://example.com/image.jpg', '2025-06-12 12:32:27', 'ewe', 1);
+(1, 1, 'Kost A', 'Kost nyaman dengan fasilitas lengkap dan lokasi strategis', 1500000.00, 'Bandung', 'Putri', 'AC, WiFi, Kamar Mandi Dalam, Dapur', 4.50, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-12 10:02:23', 'Jl. Kost No.1, Bandung', 3),
+(2, 1, 'Kost B', 'Kost nyaman dengan fasilitas lengkap dan lokasi strategis', 1200000.00, 'Solo', 'Putra', 'Kamar Mandi Dalam, AC, WiFi', 4.00, 'uploads/efb01649-1be4-403e-9fa9-9534384f8fbb.png', '2025-06-12 10:02:23', 'Jl. Kost No.2, Solo', 1),
+(3, 5, 'Kost Cempaka', 'Kost khusus putri dengan lingkungan tenang dan dekat kampus.', 1800000.00, 'Yogyakarta', 'Putri', 'AC, WiFi, Kamar Mandi Dalam, Meja Belajar, Lemari', 4.70, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-13 08:00:00', 'Jl. Cempaka No.10, Yogyakarta', 1),
+(4, 5, 'Kost Melati', 'Kost campur dengan fasilitas modern dan akses mudah ke pusat kota.', 2000000.00, 'Jakarta', 'Campur', 'AC, WiFi, Kamar Mandi Dalam, Dapur Umum, Parkir', 4.20, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-13 08:30:00', 'Jl. Melati Raya No.5, Jakarta Selatan', 1),
+(5, 6, 'Kost Anggrek', 'Kost putra strategis dekat area perkantoran.', 1350000.00, 'Surabaya', 'Putra', 'Kamar Mandi Luar, WiFi, Kasur, Lemari', 3.90, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-13 09:00:00', 'Jl. Anggrek No.22, Surabaya', 1),
+(6, 6, 'Kost Dahlia', 'Kost eksklusif dengan kamar luas dan pemandangan kota.', 2500000.00, 'Bandung', 'Putri', 'AC, Water Heater, Kamar Mandi Dalam, Dapur Pribadi, Balkon', 4.90, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', '2025-06-13 09:15:00', 'Jl. Dahlia Indah No.8, Bandung', 1);
 
 -- --------------------------------------------------------
 
@@ -73,9 +73,12 @@ CREATE TABLE `payment` (
 --
 
 INSERT INTO `payment` (`id`, `tenant_id`, `amount`, `payment_date`) VALUES
-(3, 21, 1200000.00, '2025-05-13'),
-(4, 22, 1800000.00, '2025-06-14'),
-(5, 26, 1200000.00, '2025-06-14');
+(1, 2, 1500000.00, '2025-06-01'),
+(2, 2, 1200000.00, '2025-06-05'),
+(3, 3, 1800000.00, '2025-04-28'),
+(4, 4, 2000000.00, '2025-05-10'),
+(5, 2, 1350000.00, '2025-05-12'),
+(6, 2, 2500000.00, '2025-06-14');
 
 -- --------------------------------------------------------
 
@@ -99,10 +102,17 @@ CREATE TABLE `room` (
 
 INSERT INTO `room` (`id`, `kost_id`, `number`, `type`, `price`, `rating`, `status`) VALUES
 (1, 1, '101', 'Single', 1500000.00, 5.0, 'Occupied'),
-(2, 1, '102', 'Double', 2000000.00, 4.0, 'Occupied'),
+(2, 1, '102', 'Double', 2000000.00, 4.0, 'Available'),
 (3, 2, '201', 'Single', 1200000.00, 5.0, 'Occupied'),
-(4, 2, '202', 'Double', 1800000.00, 3.0, 'Occupied'),
-(6, 3, '69', 'Double', 1200000.00, 2.0, 'Occupied');
+(4, 2, '202', 'Double', 1800000.00, 3.0, 'Available'),
+(5, 3, '301', 'Single', 1800000.00, 4.8, 'Occupied'),
+(6, 3, '302', 'Double', 2500000.00, 4.5, 'Available'),
+(7, 4, '401', 'Single', 2000000.00, 4.3, 'Occupied'),
+(8, 4, '402', 'Double', 2800000.00, 4.0, 'Available'),
+(9, 5, '501', 'Single', 1350000.00, 4.1, 'Occupied'),
+(10, 5, '502', 'Double', 1900000.00, 3.8, 'Available'),
+(11, 6, '601', 'Single', 2500000.00, 5.0, 'Occupied'),
+(12, 6, '602', 'Double', 3500000.00, 4.7, 'Available');
 
 -- --------------------------------------------------------
 
@@ -121,11 +131,12 @@ CREATE TABLE `tenant` (
 --
 
 INSERT INTO `tenant` (`id`, `user_id`, `room_id`) VALUES
-(21, 2, 3),
-(22, 2, 4),
-(23, 2, 1),
-(25, 2, 2),
-(26, 2, 6);
+(1, 2, 1),
+(2, 3, 3),
+(3, 4, 5),
+(4, 7, 7),
+(5, 8, 9),
+(6, 9, 11);
 
 -- --------------------------------------------------------
 
@@ -150,9 +161,15 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `role`) VALUES
 (1, 'John Doe', 'john.doe@example.com', 'password123', '081234567890', 'Owner'),
 (2, 'Jane Smith', 'jane.smith@example.com', 'password456', '081234567891', 'Tenant'),
 (3, 'Robert Johnson', 'robert.johnson@example.com', 'password789', '081234567892', 'Tenant'),
-(4, 'admin', 'admin@gmail.com', 'admin123', '081234567893', 'Tenant'),
-(5, 'admin3', 'admin3@gmail.com', '123', NULL, 'Owner'),
-(6, 'ewe', 'ewe@ewe.com', 'ewe', NULL, 'Owner');
+(4, 'Alice Brown', 'alice.brown@example.com', 'passabc', '081234567893', 'Tenant'),
+(5, 'David Lee', 'david.lee@example.com', 'passdef', '081234567894', 'Owner'),
+(6, 'Sarah Wilson', 'sarah.wilson@example.com', 'passghi', '081234567895', 'Owner'),
+(7, 'Michael Chen', 'michael.chen@example.com', 'passjkl', '081234567896', 'Tenant'),
+(8, 'Emily Davis', 'emily.davis@example.com', 'passmno', '081234567897', 'Tenant'),
+(9, 'Daniel White', 'daniel.white@example.com', 'passpqr', '081234567898', 'Tenant'),
+(10, 'Olivia Green', 'olivia.green@example.com', 'passtuv', '081234567899', 'Tenant'),
+(11, 'William Black', 'william.black@example.com', 'passwxy', '081234567800', 'Tenant'),
+(12, 'Sophia Blue', 'sophia.blue@example.com', 'passzab', '081234567801', 'Tenant');
 
 --
 -- Indexes for dumped tables
@@ -208,25 +225,25 @@ ALTER TABLE `kost`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `tenant`
 --
 ALTER TABLE `tenant`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables

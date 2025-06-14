@@ -84,7 +84,7 @@
 </style>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg sticky-top" style="z-index: 1030;"">
     <div class="container">
         <a class="navbar-brand" href="<%= request.getContextPath() %>/index.jsp" style="text-decoration: none; color: inherit;">KostHunt</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

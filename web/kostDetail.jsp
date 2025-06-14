@@ -216,7 +216,7 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="card" style="position: sticky; top: 20px;">
+                    <div class="card" style="position: sticky; top: 100px; z-index: 1020;">
                         <div class="card-body p-4 text-center">
                             <span class="text-muted">Mulai dari</span>
                             <h2 class="price mb-0">Rp <%= String.format("%,.0f", kost.getPrice()) %></h2>

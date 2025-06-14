@@ -1,18 +1,27 @@
 package servlets;
 
 import classes.JDBC;
-import java.io.IOException;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import java.util.UUID;
+import java.nio.file.Files;
 
 @WebServlet("/AddKostServlet")
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024, // 1 MB
+    maxFileSize = 1024 * 1024 * 5,    // 5 MB
+    maxRequestSize = 1024 * 1024 * 10  // 10 MB
+)
 public class AddKostServlet extends HttpServlet {
 
     @Override
@@ -29,9 +38,26 @@ public class AddKostServlet extends HttpServlet {
         String kostLocation = request.getParameter("location");
         String kostDescription = request.getParameter("description");
         String kostType = request.getParameter("type");
-        String kostImageUrl = request.getParameter("image_url");
         String[] facilities = request.getParameterValues("facilities");
         String priceStr = request.getParameter("price");
+        
+        // Handle image upload
+        String kostImageUrl = "";
+        Part filePart = request.getPart("image");
+        if (filePart != null && filePart.getSize() > 0) {
+            String fileName = UUID.randomUUID().toString() + getFileExtension(filePart.getSubmittedFileName());
+            String uploadPath = getServletContext().getRealPath("/uploads");
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            
+            File file = new File(uploadPath + File.separator + fileName);
+            try (InputStream input = filePart.getInputStream()) {
+                Files.copy(input, file.toPath());
+            }
+            kostImageUrl = "uploads/" + fileName;
+        }
         
         // Validate price parameter
         double kostPrice = 0;
@@ -125,5 +151,13 @@ public class AddKostServlet extends HttpServlet {
         } finally {
             db.disconnect();
         }
+    }
+
+    private String getFileExtension(String fileName) {
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex == -1) {
+            return "";
+        }
+        return fileName.substring(dotIndex);
     }
 }

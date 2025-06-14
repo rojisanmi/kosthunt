@@ -164,6 +164,57 @@
             color: #991b1b;
         }
 
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            border-radius: 0.75rem;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 2px dashed #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .image-preview:hover {
+            border-color: var(--primary-color);
+        }
+
+        .image-upload-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .image-upload-label {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            background: var(--light-bg);
+            border: 2px dashed #e2e8f0;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-upload-label:hover {
+            border-color: var(--primary-color);
+            background: #f1f5f9;
+        }
+
+        .image-upload-input {
+            display: none;
+        }
+
+        .image-upload-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .image-upload-text {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -233,8 +284,38 @@
                     </div>
                 <% } %>
 
-                <form action="<%= request.getContextPath() %>/editKost" method="post">
+                <form action="<%= request.getContextPath() %>/editKost" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="<%= kost.getId() %>">
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Foto Kost</label>
+                        <div class="image-upload-container">
+                            <% if (kost.getImageUrl() != null && !kost.getImageUrl().isEmpty()) { %>
+                                <img src="<%= request.getContextPath() %>/<%= kost.getImageUrl() %>" 
+                                     alt="<%= kost.getName() %>" 
+                                     class="image-preview" 
+                                     id="imagePreview">
+                            <% } else { %>
+                                <img src="https://placehold.co/600x400?text=<%= java.net.URLEncoder.encode(kost.getName(), "UTF-8") %>" 
+                                     alt="<%= kost.getName() %>" 
+                                     class="image-preview" 
+                                     id="imagePreview">
+                            <% } %>
+                            <label for="image" class="image-upload-label">
+                                <i class="fas fa-cloud-upload-alt image-upload-icon"></i>
+                                <div class="image-upload-text">
+                                    Klik untuk mengubah foto kost<br>
+                                    <small>Format: JPG, PNG, atau GIF (Max. 5MB)</small>
+                                </div>
+                            </label>
+                            <input type="file" 
+                                   class="image-upload-input" 
+                                   id="image" 
+                                   name="image" 
+                                   accept="image/*"
+                                   onchange="previewImage(this)">
+                        </div>
+                    </div>
                     
                     <div class="mb-4">
                         <label for="name" class="form-label">Nama Kost</label>
@@ -256,6 +337,79 @@
                                   rows="3" required><%= kost.getAddress() %></textarea>
                     </div>
                     
+                    <div class="mb-4">
+                        <label for="description" class="form-label">Deskripsi Kost</label>
+                        <textarea class="form-control" id="description" name="description" 
+                                  rows="4" required><%= kost.getDescription() != null ? kost.getDescription() : "" %></textarea>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="type" class="form-label">Tipe Kost</label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option value="">Pilih tipe kost</option>
+                            <option value="Putra" <%= "Putra".equals(kost.getType()) ? "selected" : "" %>>Putra</option>
+                            <option value="Putri" <%= "Putri".equals(kost.getType()) ? "selected" : "" %>>Putri</option>
+                            <option value="Campur" <%= "Campur".equals(kost.getType()) ? "selected" : "" %>>Campur</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="price" class="form-label">Harga per Bulan</label>
+                        <div class="input-group">
+                            <span class="input-group-text">Rp</span>
+                            <input type="number" class="form-control" id="price" name="price" 
+                                   value="<%= kost.getPrice() %>" required min="0" step="1000">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Fasilitas</label>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="facilities" value="Kamar Mandi Dalam" 
+                                           id="facility1" <%= kost.getFacilities() != null && kost.getFacilities().contains("Kamar Mandi Dalam") ? "checked" : "" %>>
+                                    <label class="form-check-label" for="facility1">Kamar Mandi Dalam</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="facilities" value="AC" 
+                                           id="facility2" <%= kost.getFacilities() != null && kost.getFacilities().contains("AC") ? "checked" : "" %>>
+                                    <label class="form-check-label" for="facility2">AC</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="facilities" value="WiFi" 
+                                           id="facility3" <%= kost.getFacilities() != null && kost.getFacilities().contains("WiFi") ? "checked" : "" %>>
+                                    <label class="form-check-label" for="facility3">WiFi</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="facilities" value="Kasur" 
+                                           id="facility4" <%= kost.getFacilities() != null && kost.getFacilities().contains("Kasur") ? "checked" : "" %>>
+                                    <label class="form-check-label" for="facility4">Kasur</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="facilities" value="Lemari" 
+                                           id="facility5" <%= kost.getFacilities() != null && kost.getFacilities().contains("Lemari") ? "checked" : "" %>>
+                                    <label class="form-check-label" for="facility5">Lemari</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="facilities" value="Meja" 
+                                           id="facility6" <%= kost.getFacilities() != null && kost.getFacilities().contains("Meja") ? "checked" : "" %>>
+                                    <label class="form-check-label" for="facility6">Meja</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="mt-4">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save me-2"></i>
@@ -273,6 +427,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         // Add smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

@@ -214,6 +214,59 @@
             color: #991b1b;
         }
 
+        /* Image upload styles */
+        .image-upload-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #e2e8f0;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .image-upload-container:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .image-upload-container input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .image-upload-placeholder {
+            text-align: center;
+            color: var(--secondary-color);
+        }
+
+        .image-upload-placeholder i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .image-upload-container.has-image .image-upload-placeholder {
+            display: none;
+        }
+
+        .image-upload-container.has-image .image-preview {
+            display: block;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -280,7 +333,7 @@
                     </div>
                 <% } %>
 
-                <form action="<%= request.getContextPath() %>/AddKostServlet" method="post">
+                <form action="<%= request.getContextPath() %>/AddKostServlet" method="post" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <label for="name" class="form-label">Nama Kost</label>
@@ -321,8 +374,16 @@
                             </div>
                         </div>
                         <div class="col-md-6 mb-4">
-                            <label for="image_url" class="form-label">URL Gambar</label>
-                            <input type="url" class="form-control" id="image_url" name="image_url" placeholder="https://example.com/image.jpg">
+                            <label class="form-label">Gambar Kost</label>
+                            <div class="image-upload-container" id="imageUploadContainer">
+                                <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+                                <div class="image-upload-placeholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Klik atau seret gambar ke sini</p>
+                                    <small>Format: JPG, PNG, GIF (Max. 5MB)</small>
+                                </div>
+                                <img id="imagePreview" class="image-preview" src="#" alt="Preview">
+                            </div>
                         </div>
                     </div>
 
@@ -378,6 +439,40 @@
             let value = e.target.value;
             if (value < 0) e.target.value = 0;
         });
+
+        // Image preview functionality
+        function previewImage(input) {
+            const container = document.getElementById('imageUploadContainer');
+            const preview = document.getElementById('imagePreview');
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Check file size (5MB max)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Ukuran file terlalu besar. Maksimal 5MB.');
+                    input.value = '';
+                    return;
+                }
+                
+                // Check file type
+                if (!file.type.match('image.*')) {
+                    alert('File harus berupa gambar.');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    container.classList.add('has-image');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '#';
+                container.classList.remove('has-image');
+            }
+        }
 
         // Handle facilities checkboxes
         document.querySelectorAll('input[name="facilities"]').forEach(checkbox => {

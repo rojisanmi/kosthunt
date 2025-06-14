@@ -2,6 +2,7 @@ package servlets;
 
 import classes.JDBC;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -25,24 +26,60 @@ public class DeleteKostServlet extends HttpServlet {
             int kostId = Integer.parseInt(request.getParameter("id"));
             JDBC db = new JDBC();
             db.connect();
-            
-            // PENTING: Untuk aplikasi nyata, Anda harus menghapus data terkait dulu
-            // (kamar, tenant, pembayaran) sebelum menghapus kost.
-            // Di sini kita langsung hapus untuk simplifikasi.
-            String query = "DELETE FROM Kost WHERE id = ?";
+            Connection conn = db.getConnection();
             
             try {
-                PreparedStatement stmt = db.getConnection().prepareStatement(query);
-                stmt.setInt(1, kostId);
-                stmt.executeUpdate();
+                // Start transaction
+                conn.setAutoCommit(false);
+                
+                // 1. Delete all tenants associated with rooms in this kost
+                String deleteTenantsQuery = "DELETE t FROM tenant t " +
+                                          "JOIN room r ON t.room_id = r.id " +
+                                          "WHERE r.kost_id = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(deleteTenantsQuery)) {
+                    stmt.setInt(1, kostId);
+                    stmt.executeUpdate();
+                }
+                
+                // 2. Delete all rooms in this kost
+                String deleteRoomsQuery = "DELETE FROM room WHERE kost_id = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(deleteRoomsQuery)) {
+                    stmt.setInt(1, kostId);
+                    stmt.executeUpdate();
+                }
+                
+                // 3. Finally, delete the kost itself
+                String deleteKostQuery = "DELETE FROM Kost WHERE id = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(deleteKostQuery)) {
+                    stmt.setInt(1, kostId);
+                    stmt.executeUpdate();
+                }
+                
+                // If everything went well, commit the transaction
+                conn.commit();
+                session.setAttribute("successMessage", "Kost berhasil dihapus beserta semua kamar dan data terkait.");
+                
             } catch (SQLException e) {
-                e.printStackTrace();
+                // If anything goes wrong, rollback the transaction
+                try {
+                    conn.rollback();
+                    session.setAttribute("errorMessage", "Gagal menghapus kost: " + e.getMessage());
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    session.setAttribute("errorMessage", "Terjadi kesalahan saat rollback: " + ex.getMessage());
+                }
             } finally {
+                try {
+                    // Reset auto-commit to true
+                    conn.setAutoCommit(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 db.disconnect();
             }
             
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            session.setAttribute("errorMessage", "ID Kost tidak valid.");
         }
         
         response.sendRedirect("ownerDashboard");

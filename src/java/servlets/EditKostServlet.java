@@ -2,19 +2,28 @@ package servlets;
 
 import classes.JDBC;
 import models.Kost;
-import java.io.IOException;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import java.util.UUID;
+import java.nio.file.Files;
 
 @WebServlet("/editKost")
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024, // 1 MB
+    maxFileSize = 1024 * 1024 * 5,    // 5 MB
+    maxRequestSize = 1024 * 1024 * 10  // 10 MB
+)
 public class EditKostServlet extends HttpServlet {
 
     // Metode ini untuk MENAMPILKAN form edit dengan data yang sudah ada
@@ -74,25 +83,99 @@ public class EditKostServlet extends HttpServlet {
         String name = request.getParameter("name");
         String address = request.getParameter("address");
         String location = request.getParameter("location");
+        String description = request.getParameter("description");
+        String type = request.getParameter("type");
+        String priceStr = request.getParameter("price");
+        String[] facilities = request.getParameterValues("facilities");
+        
+        // Handle image upload
+        String imageUrl = null;
+        Part filePart = request.getPart("image");
+        if (filePart != null && filePart.getSize() > 0) {
+            String fileName = UUID.randomUUID().toString() + getFileExtension(filePart.getSubmittedFileName());
+            String uploadPath = getServletContext().getRealPath("/uploads");
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            
+            File file = new File(uploadPath + File.separator + fileName);
+            try (InputStream input = filePart.getInputStream()) {
+                Files.copy(input, file.toPath());
+            }
+            imageUrl = "uploads/" + fileName;
+        }
 
         JDBC db = new JDBC();
         db.connect();
 
-        String query = "UPDATE Kost SET name = ?, address = ?, location = ? WHERE id = ?";
+        try {
+            // Get current kost data to check if we need to update the image
+            String currentImageUrl = null;
+            String getCurrentImageQuery = "SELECT image_url FROM Kost WHERE id = ?";
+            try (PreparedStatement stmt = db.getConnection().prepareStatement(getCurrentImageQuery)) {
+                stmt.setInt(1, id);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        currentImageUrl = rs.getString("image_url");
+                    }
+                }
+            }
 
-        try (PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
-            stmt.setString(1, name);
-            stmt.setString(2, address);
-            stmt.setString(3, location);
-            stmt.setInt(4, id);
-            stmt.executeUpdate();
+            // Prepare the update query
+            StringBuilder updateQuery = new StringBuilder("UPDATE Kost SET name = ?, address = ?, location = ?, description = ?, type = ?, price = ?");
+            if (imageUrl != null) {
+                updateQuery.append(", image_url = ?");
+            }
+            if (facilities != null) {
+                updateQuery.append(", facilities = ?");
+            }
+            updateQuery.append(" WHERE id = ?");
+
+            try (PreparedStatement stmt = db.getConnection().prepareStatement(updateQuery.toString())) {
+                int paramIndex = 1;
+                stmt.setString(paramIndex++, name);
+                stmt.setString(paramIndex++, address);
+                stmt.setString(paramIndex++, location);
+                stmt.setString(paramIndex++, description);
+                stmt.setString(paramIndex++, type);
+                stmt.setDouble(paramIndex++, Double.parseDouble(priceStr));
+                
+                if (imageUrl != null) {
+                    stmt.setString(paramIndex++, imageUrl);
+                }
+                if (facilities != null) {
+                    stmt.setString(paramIndex++, String.join(", ", facilities));
+                }
+                stmt.setInt(paramIndex, id);
+                
+                stmt.executeUpdate();
+                
+                // If we have a new image and there was an old image, delete the old image file
+                if (imageUrl != null && currentImageUrl != null && !currentImageUrl.isEmpty()) {
+                    File oldImageFile = new File(getServletContext().getRealPath("/") + currentImageUrl);
+                    if (oldImageFile.exists()) {
+                        oldImageFile.delete();
+                    }
+                }
+            }
+            
+            session.setAttribute("successMessage", "Kost berhasil diperbarui.");
         } catch (SQLException e) {
             e.printStackTrace();
+            session.setAttribute("errorMessage", "Gagal memperbarui kost: " + e.getMessage());
         } finally {
             db.disconnect();
         }
 
-        // Setelah berhasil update, kembalikan ke dashboard
         response.sendRedirect("ownerDashboard");
+    }
+
+    private String getFileExtension(String fileName) {
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex == -1) {
+            return "";
+        }
+        return fileName.substring(dotIndex);
     }
 }
