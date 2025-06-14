@@ -106,6 +106,11 @@
                                     <i class="fas fa-home"></i> Dashboard
                                 </a></li>
                             <% } %>
+                            <% if ("Tenant".equals(userData.get("role"))) { %>
+                                <li><a class="dropdown-item" href="<%= request.getContextPath() %>/tenantDashboard">
+                                    <i class="fas fa-home"></i> Dashboard
+                                </a></li>
+                            <% } %>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="<%= request.getContextPath() %>/logout.jsp">
                                 <i class="fas fa-sign-out-alt"></i> Logout

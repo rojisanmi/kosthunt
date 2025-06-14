@@ -1,7 +1,9 @@
-<%@page import="models.*, java.util.*, java.net.URLEncoder"%>
+<%@page import="models.*, java.util.*, java.net.URLEncoder, java.text.SimpleDateFormat"%>
 <%
     List<Map<String, Object>> rentalList = (List<Map<String, Object>>) request.getAttribute("rentalList");
     List<Kost> kostList = (List<Kost>) request.getAttribute("kostList");
+    List<Map<String, Object>> paymentHistory = (List<Map<String, Object>>) request.getAttribute("paymentHistory");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
 %>
 <!DOCTYPE html>
 <html lang="id">
@@ -89,8 +91,46 @@
         <% } else { %>
             <%-- (Kode jika tenant belum sewa tidak berubah) --%>
         <% } %>
+
+        <!-- Riwayat Pembayaran -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0 fw-bold">Riwayat Pembayaran</h5>
+            </div>
+            <div class="card-body p-4">
+                <% if (paymentHistory != null && !paymentHistory.isEmpty()) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kost</th>
+                                    <th>Nomor Kamar</th>
+                                    <th>Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (Map<String, Object> payment : paymentHistory) { %>
+                                    <tr>
+                                        <td><%= dateFormat.format(payment.get("paymentDate")) %></td>
+                                        <td><%= payment.get("kostName") %></td>
+                                        <td><%= payment.get("roomNumber") %></td>
+                                        <td>Rp <%= String.format("%,.2f", payment.get("amount")) %></td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-0">Belum ada riwayat pembayaran</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Fungsi updateStars tidak berubah
         function updateStars(stars, value) {
